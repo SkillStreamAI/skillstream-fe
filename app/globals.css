@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
+/* ── Design Tokens ─────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background:    #0a0a0a;
+  --foreground:    #ededed;
+  --surface:       #111111;
+  --surface-hover: #1a1a1a;
+  --border:        #2a2a2a;
+
+  --purple: #7c3aed;
+  --blue:   #2563eb;
+  --teal:   #0d9488;
+
+  --gradient-hero: linear-gradient(135deg, #7c3aed 0%, #2563eb 50%, #0d9488 100%);
+  --gradient-card: linear-gradient(135deg, #7c3aed, #2563eb, #0d9488);
+  --gradient-text: linear-gradient(90deg, #7c3aed, #2563eb, #0d9488);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background:   var(--background);
+  --color-foreground:   var(--foreground);
+  --color-surface:      var(--surface);
+  --color-border:       var(--border);
+  --color-purple:       var(--purple);
+  --color-blue:         var(--blue);
+  --color-teal:         var(--teal);
+  --font-sans:          var(--font-geist-sans);
+  --font-mono:          var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ── Base ──────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* ── Gradient Text ─────────────────────────────────────────── */
+.gradient-text {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Gradient Card Border ──────────────────────────────────── */
+/* Wrap card in <div class="gradient-border rounded-xl"> then
+   put the card itself with bg-[#111] inside. The 1px of gradient
+   showing around the card creates the border effect. */
+.gradient-border {
+  background: var(--gradient-card);
+  padding: 1px;
+  border-radius: 0.75rem; /* matches rounded-xl */
+}
+
+/* ── Animated Hero Background ──────────────────────────────── */
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-gradient {
+  background: linear-gradient(-45deg, #7c3aed, #2563eb, #0d9488, #1e1b4b);
+  background-size: 400% 400%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* ── Glassy Navbar ─────────────────────────────────────────── */
+.glass {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Spin animation for loading spinners ───────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Audio range input accent ──────────────────────────────── */
+input[type="range"] {
+  accent-color: var(--purple);
 }
