@@ -35,9 +35,10 @@ export default function PlayerPage() {
   useEffect(() => {
     getContent()
       .then((roadmaps) => setEpisodes(flattenEpisodes(roadmaps)))
-      .catch((err) => {
-        console.warn('Content Lambda unavailable:', err);
-        setError('Could not load episodes. Check that NEXT_PUBLIC_LAMBDA_CONTENT_URL is set.');
+      .catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error('getContent failed:', msg);
+        setError(msg);
       })
       .finally(() => setLoading(false));
   }, []);

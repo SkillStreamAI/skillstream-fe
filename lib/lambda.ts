@@ -71,11 +71,34 @@ export async function getProgress(userId: string): Promise<ProgressData> {
 /**
  * GET → ContentRoadmap[]
  * Returns all roadmaps and their nested episodes from DynamoDB/S3.
- * Response body is a JSON array: [{id, topic, title, description, episodes[]}]
+ *
+ * Handles two possible response shapes from Lambda Function URLs:
+ *   1. Direct array:  [{id, topic, title, description, episodes[]}]
+ *   2. Envelope:      {statusCode, body: "[{...}]"}  (body is a JSON string)
  */
 export async function getContent(): Promise<ContentRoadmap[]> {
   const url = process.env.NEXT_PUBLIC_LAMBDA_CONTENT_URL ?? '';
-  return lambdaGet<ContentRoadmap[]>(url);
+  if (!url) throw new Error('NEXT_PUBLIC_LAMBDA_CONTENT_URL is not set');
+
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(`Lambda GET failed (${res.status}): ${msg}`);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: any = await res.json();
+
+  // Shape 1 — direct array
+  if (Array.isArray(data)) return data as ContentRoadmap[];
+
+  // Shape 2 — Lambda envelope {statusCode, body: "..."}
+  if (data?.body !== undefined) {
+    const body = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
+    if (Array.isArray(body)) return body as ContentRoadmap[];
+  }
+
+  throw new Error(`Unexpected response shape: ${JSON.stringify(data).slice(0, 200)}`);
 }
 
 /**
