@@ -2,77 +2,42 @@
 import { useState, useEffect } from 'react';
 import { AudioPlayer } from '@/components/player/AudioPlayer';
 import { EpisodeList } from '@/components/player/EpisodeList';
-import { getEpisodes } from '@/lib/lambda';
-import type { Episode } from '@/lib/types';
+import { getContent } from '@/lib/lambda';
+import type { ContentRoadmap, Episode } from '@/lib/types';
 
-const MOCK_EPISODES: Episode[] = [
-  {
-    id: 'ep1',
-    title: 'Introduction to Cloud Architecture',
-    topic: 'AWS',
-    level: 'foundational',
-    durationMin: 18,
-    audioUrl: '',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'ep2',
-    title: 'Serverless Patterns with AWS Lambda',
-    topic: 'AWS',
-    level: 'intermediate',
-    durationMin: 25,
-    audioUrl: '',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'ep3',
-    title: 'Amazon Bedrock & Foundation Models',
-    topic: 'AI Engineering',
-    level: 'intermediate',
-    durationMin: 30,
-    audioUrl: '',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'ep4',
-    title: 'React Performance Deep Dive',
-    topic: 'React',
-    level: 'advanced',
-    durationMin: 32,
-    audioUrl: '',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'ep5',
-    title: 'TypeScript Advanced Types & Patterns',
-    topic: 'TypeScript',
-    level: 'advanced',
-    durationMin: 28,
-    audioUrl: '',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'ep6',
-    title: 'Kubernetes Production Architecture',
-    topic: 'DevOps',
-    level: 'expert',
-    durationMin: 45,
-    audioUrl: '',
-    createdAt: new Date().toISOString(),
-  },
-];
+// Extracted to avoid nesting deeper than 4 levels inside the component
+function flattenEpisodes(roadmaps: ContentRoadmap[]): Episode[] {
+  const result: Episode[] = [];
+  for (const rm of roadmaps) {
+    for (const ep of rm.episodes) {
+      result.push({
+        id: ep.id,
+        title: ep.title,
+        topic: rm.topic,
+        level: '',
+        durationMin: 0,
+        audioUrl: ep.audio_url ?? '',
+        createdAt: '',
+        overview: ep.overview,
+        status: ep.status,
+      });
+    }
+  }
+  return result;
+}
 
 export default function PlayerPage() {
   const [episodes, setEpisodes]   = useState<Episode[]>([]);
   const [current, setCurrent]     = useState<Episode | null>(null);
   const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState('');
 
   useEffect(() => {
-    getEpisodes()
-      .then((data) => setEpisodes(data.episodes))
-      .catch(() => {
-        // Lambda not configured — use mock data
-        setEpisodes(MOCK_EPISODES);
+    getContent()
+      .then((roadmaps) => setEpisodes(flattenEpisodes(roadmaps)))
+      .catch((err) => {
+        console.warn('Content Lambda unavailable:', err);
+        setError('Could not load episodes. Check that NEXT_PUBLIC_LAMBDA_CONTENT_URL is set.');
       })
       .finally(() => setLoading(false));
   }, []);
@@ -96,6 +61,13 @@ export default function PlayerPage() {
           Listen to AI-generated episodes — each one a focused 5–10 minute concept deep-dive.
         </p>
       </div>
+
+      {/* Error */}
+      {error && (
+        <div className="mb-6 rounded-xl bg-red-950/40 px-4 py-3 text-sm text-red-400 border border-red-900/40">
+          {error}
+        </div>
+      )}
 
       {/* Loading */}
       {loading && (

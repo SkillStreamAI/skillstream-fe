@@ -5,8 +5,9 @@ import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/Button';
 
 const NAV_LINKS = [
-  { href: '/generator', label: 'Generate' },
-  { href: '/player',    label: 'Podcast'  },
+  { href: '/roadmaps',  label: 'Roadmaps'  },
+  { href: '/generator', label: 'Generate'  },
+  { href: '/player',    label: 'Podcast'   },
   { href: '/dashboard', label: 'Dashboard' },
 ];
 

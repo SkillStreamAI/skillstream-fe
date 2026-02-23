@@ -7,7 +7,16 @@ interface EpisodeListProps {
   onSelect: (episode: Episode) => void;
 }
 
-export function EpisodeList({ episodes, currentId, onSelect }: EpisodeListProps) {
+function StatusBadge({ status }: Readonly<{ status?: string }>) {
+  if (!status || status === 'READY') return null;
+  return (
+    <span className="rounded-full bg-yellow-950/60 px-2 py-0.5 text-[10px] font-semibold text-yellow-500 border border-yellow-800/40">
+      {status.replaceAll('_', ' ')}
+    </span>
+  );
+}
+
+export function EpisodeList({ episodes, currentId, onSelect }: Readonly<EpisodeListProps>) {
   if (episodes.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-[#52525b]">
@@ -32,12 +41,9 @@ export function EpisodeList({ episodes, currentId, onSelect }: EpisodeListProps)
           <p className="text-sm font-medium leading-snug line-clamp-2">
             {ep.title}
           </p>
-          <div className="mt-1 flex items-center gap-2 text-xs text-[#52525b]">
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-[#52525b]">
             <span className="capitalize">{ep.topic}</span>
-            <span>·</span>
-            <span className="capitalize">{ep.level}</span>
-            <span>·</span>
-            <span>{ep.durationMin} min</span>
+            <StatusBadge status={ep.status} />
           </div>
         </button>
       ))}

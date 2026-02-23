@@ -3,6 +3,7 @@ import type {
   EpisodesResponse,
   ProgressData,
   TrackProgressResponse,
+  ContentRoadmap,
 } from '@/lib/types';
 
 // ── Generic fetch helpers ─────────────────────────────────────
@@ -65,6 +66,16 @@ export async function getProgress(userId: string): Promise<ProgressData> {
   return lambdaGet<ProgressData>(
     `${url}?userId=${encodeURIComponent(userId)}`
   );
+}
+
+/**
+ * GET → ContentRoadmap[]
+ * Returns all roadmaps and their nested episodes from DynamoDB/S3.
+ * Response body is a JSON array: [{id, topic, title, description, episodes[]}]
+ */
+export async function getContent(): Promise<ContentRoadmap[]> {
+  const url = process.env.NEXT_PUBLIC_LAMBDA_CONTENT_URL ?? '';
+  return lambdaGet<ContentRoadmap[]>(url);
 }
 
 /**

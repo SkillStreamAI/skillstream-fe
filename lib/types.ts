@@ -25,6 +25,27 @@ export interface Episode {
   durationMin: number;
   audioUrl: string;
   createdAt: string;
+  // Fields from the Content Lambda
+  overview?: string;
+  status?: string;
+}
+
+// ── Raw shapes returned by the Content Lambda ─────────────────
+
+export interface ContentEpisode {
+  id: string;
+  title: string;
+  overview: string;
+  audio_url: string | null;
+  status: string;
+}
+
+export interface ContentRoadmap {
+  id: string;
+  topic: string;
+  title: string;
+  description: string;
+  episodes: ContentEpisode[];
 }
 
 export interface User {
