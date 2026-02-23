@@ -1,7 +1,7 @@
 import { AuthForm } from '@/components/auth/AuthForm';
 
 export const metadata = {
-  title: 'Sign In — SkillStream AI',
+  title: 'Sign In — SkillStream AI-s',
 };
 
 export default function LoginPage() {
