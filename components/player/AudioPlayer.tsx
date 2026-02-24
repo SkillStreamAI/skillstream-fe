@@ -45,16 +45,12 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
 
   const toggle = () => {
     const audio = audioRef.current;
-    if (!audio) return;
-    console.log('[AudioPlayer] src:', audio.src, '| episode.audioUrl:', episode?.audioUrl);
+    if (!audio || !audio.src) return;
     if (playing) {
       audio.pause();
       setPlaying(false);
     } else {
-      audio.play().catch((err) => {
-        console.error('[AudioPlayer] play() failed:', err);
-        setPlaying(false);
-      });
+      audio.play().catch(() => setPlaying(false));
       setPlaying(true);
     }
   };

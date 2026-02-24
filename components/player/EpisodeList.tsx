@@ -27,12 +27,16 @@ export function EpisodeList({ episodes, currentId, onSelect }: Readonly<EpisodeL
 
   return (
     <div className="flex flex-col gap-1">
-      {episodes.map((ep) => (
+      {episodes.map((ep) => {
+        const playable = ep.status === 'COMPLETED' && !!ep.audioUrl;
+        return (
         <button
           key={ep.id}
-          onClick={() => onSelect(ep)}
+          onClick={() => playable && onSelect(ep)}
+          disabled={!playable}
           className={[
-            'w-full rounded-xl px-4 py-3 text-left transition-all cursor-pointer',
+            'w-full rounded-xl px-4 py-3 text-left transition-all',
+            playable ? 'cursor-pointer' : 'cursor-not-allowed opacity-40',
             currentId === ep.id
               ? 'bg-[linear-gradient(135deg,#7c3aed22,#2563eb22)] border border-[#7c3aed]/40 text-white'
               : 'border border-transparent text-[#a1a1aa] hover:bg-[#1a1a1a] hover:text-white',
@@ -46,7 +50,8 @@ export function EpisodeList({ episodes, currentId, onSelect }: Readonly<EpisodeL
             <StatusBadge status={ep.status} />
           </div>
         </button>
-      ))}
+        );
+      })}
     </div>
   );
 }
