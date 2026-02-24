@@ -51,8 +51,8 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
       audio.pause();
       setPlaying(false);
     } else {
-      audio.play().catch(() => {
-        // Audio URL may not be real yet — silently fail
+      audio.play().catch((err) => {
+        console.error('[AudioPlayer] play() failed:', err);
         setPlaying(false);
       });
       setPlaying(true);
