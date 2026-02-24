@@ -3,8 +3,8 @@ import { useRef, useState, useEffect, useMemo } from 'react';
 import type { Episode } from '@/lib/types';
 
 interface AudioPlayerProps {
-  episode: Episode | null;
-  onEnded?: () => void;
+  readonly episode: Episode | null;
+  readonly onEnded?: () => void;
 }
 
 function formatTime(sec: number): string {
@@ -14,10 +14,10 @@ function formatTime(sec: number): string {
 }
 
 // Generate deterministic bar heights from episode id (avoids hydration mismatch)
-function barsFromId(id: string, count: number): number[] {
+function barsFromId(id: string, count: number): { key: string; height: number }[] {
   return Array.from({ length: count }, (_, i) => {
-    const code = (id.charCodeAt(i % id.length) + i * 17) % 100;
-    return 20 + (code % 80); // 20–100%
+    const code = (id.codePointAt(i % id.length) ?? 0 + i * 17) % 100;
+    return { key: `${id}-${i}`, height: 20 + (code % 80) };
   });
 }
 
@@ -45,7 +45,7 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
 
   const toggle = () => {
     const audio = audioRef.current;
-    if (!audio || !audio.src) return;
+    if (!audio?.src) return;
     if (playing) {
       audio.pause();
       setPlaying(false);
@@ -86,18 +86,20 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
           {episode.title}
         </h2>
         <p className="mt-0.5 text-sm capitalize text-[#a1a1aa]">
-          {episode.topic} · {episode.level} · {episode.durationMin} min
+          {episode.topic}
+          {episode.level ? ` · ${episode.level}` : ''}
+          {duration > 0 ? ` · ${formatTime(duration)}` : ''}
         </p>
       </div>
 
       {/* Waveform visualizer */}
       <div className="flex h-16 items-end gap-0.5 rounded-xl bg-[#1a1a1a] px-4 py-3">
-        {bars.map((h, i) => (
+        {bars.map(({ key, height }, i) => (
           <div
-            key={i}
+            key={key}
             className="flex-1 rounded-full transition-all"
             style={{
-              height: `${h}%`,
+              height: `${height}%`,
               background:
                 progress > i / bars.length
                   ? 'linear-gradient(to top, #7c3aed, #2563eb)'
@@ -146,7 +148,9 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
           setPlaying(false);
           onEnded?.();
         }}
-      />
+      >
+        <track kind="captions" />
+      </audio>
     </div>
   );
 }
