@@ -8,7 +8,11 @@ import type { ContentRoadmap, Episode } from '@/lib/types';
 // Extracted to avoid nesting deeper than 4 levels inside the component
 function proxyAudioUrl(s3Url: string | null): string {
   if (!s3Url) return '';
-  return `/api/audio?url=${encodeURIComponent(s3Url)}`;
+  // The Lambda/Bedrock output sometimes stores URLs with embedded markdown link
+  // syntax, e.g. https://bucket[.s3.amazonaws.com/](https://.s3.amazonaws.com/)key.mp3
+  // Strip it so fetch() receives a valid URL.
+  const sanitized = s3Url.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  return `/api/audio?url=${encodeURIComponent(sanitized)}`;
 }
 
 function flattenEpisodes(roadmaps: ContentRoadmap[]): Episode[] {
