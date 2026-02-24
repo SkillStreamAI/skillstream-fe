@@ -46,6 +46,7 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
   const toggle = () => {
     const audio = audioRef.current;
     if (!audio) return;
+    console.log('[AudioPlayer] src:', audio.src, '| episode.audioUrl:', episode?.audioUrl);
     if (playing) {
       audio.pause();
       setPlaying(false);
