@@ -6,6 +6,11 @@ import { getContent } from '@/lib/lambda';
 import type { ContentRoadmap, Episode } from '@/lib/types';
 
 // Extracted to avoid nesting deeper than 4 levels inside the component
+function proxyAudioUrl(s3Url: string | null): string {
+  if (!s3Url) return '';
+  return `/api/audio?url=${encodeURIComponent(s3Url)}`;
+}
+
 function flattenEpisodes(roadmaps: ContentRoadmap[]): Episode[] {
   const result: Episode[] = [];
   for (const rm of roadmaps) {
@@ -16,7 +21,7 @@ function flattenEpisodes(roadmaps: ContentRoadmap[]): Episode[] {
         topic: rm.topic,
         level: '',
         durationMin: 0,
-        audioUrl: ep.audio_url ?? '',
+        audioUrl: proxyAudioUrl(ep.audio_url),
         createdAt: '',
         overview: ep.overview,
         status: ep.status,
