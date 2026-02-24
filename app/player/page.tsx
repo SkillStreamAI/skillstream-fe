@@ -62,12 +62,12 @@ export default function PlayerPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:py-12 sm:px-6 lg:px-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">
           Podcast <span className="gradient-text">Player</span>
         </h1>
-        <p className="mt-2 text-[#a1a1aa]">
+        <p className="mt-1 text-sm text-[#a1a1aa] sm:mt-2 sm:text-base">
           Listen to AI-generated episodes — each one a focused 5–10 minute concept deep-dive.
         </p>
       </div>
@@ -90,10 +90,17 @@ export default function PlayerPage() {
       )}
 
       {!loading && (
-        <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
-          {/* Episode list */}
-          <div className="gradient-border rounded-xl">
-            <div className="flex h-[calc(100vh-240px)] min-h-[400px] flex-col rounded-xl bg-[#111]">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-[360px_1fr]">
+          {/* Audio player — first on mobile so it's visible after episode selection */}
+          <div className="order-1 lg:order-2 gradient-border rounded-xl">
+            <div className="rounded-xl bg-[#111] p-4 sm:p-8">
+              <AudioPlayer episode={current} onEnded={handleEnded} />
+            </div>
+          </div>
+
+          {/* Episode list — second on mobile, first column on desktop */}
+          <div className="order-2 lg:order-1 gradient-border rounded-xl">
+            <div className="flex h-[50vh] min-h-[280px] flex-col rounded-xl bg-[#111] lg:h-[calc(100vh-240px)] lg:min-h-[400px]">
               <div className="border-b border-[#2a2a2a] px-4 py-3">
                 <p className="text-xs font-semibold uppercase tracking-widest text-[#52525b]">
                   Episodes ({episodes.length})
@@ -106,13 +113,6 @@ export default function PlayerPage() {
                   onSelect={setCurrent}
                 />
               </div>
-            </div>
-          </div>
-
-          {/* Audio player */}
-          <div className="gradient-border rounded-xl">
-            <div className="rounded-xl bg-[#111] p-8">
-              <AudioPlayer episode={current} onEnded={handleEnded} />
             </div>
           </div>
         </div>

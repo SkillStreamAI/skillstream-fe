@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
@@ -15,6 +16,7 @@ export function Navbar() {
   const pathname = usePathname();
   const router   = useRouter();
   const { user, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -22,16 +24,16 @@ export function Navbar() {
   };
 
   return (
-    <nav className="glass fixed top-0 left-0 right-0 z-50 h-16">
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <nav className="glass fixed top-0 left-0 right-0 z-50">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-2 select-none">
+        <Link href="/" className="flex items-center gap-2 select-none" onClick={() => setMenuOpen(false)}>
           <span className="gradient-text text-xl font-bold tracking-tight">
             SkillStream AI
           </span>
         </Link>
 
-        {/* Nav links */}
+        {/* Desktop nav links */}
         <div className="hidden items-center gap-6 md:flex">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
@@ -48,7 +50,7 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* Auth */}
+        {/* Right side: auth + hamburger */}
         <div className="flex items-center gap-3">
           {user ? (
             <>
@@ -64,8 +66,39 @@ export function Navbar() {
               Sign in
             </Button>
           )}
+
+          {/* Hamburger — mobile only */}
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            className="flex md:hidden flex-col justify-center items-center w-8 h-8 gap-1.5 rounded focus:outline-none"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          >
+            <span className={`block h-0.5 w-5 bg-white transition-all duration-200 ${menuOpen ? 'translate-y-2 rotate-45' : ''}`} />
+            <span className={`block h-0.5 w-5 bg-white transition-all duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
+            <span className={`block h-0.5 w-5 bg-white transition-all duration-200 ${menuOpen ? '-translate-y-2 -rotate-45' : ''}`} />
+          </button>
         </div>
       </div>
+
+      {/* Mobile dropdown menu */}
+      {menuOpen && (
+        <div className="border-t border-[#2a2a2a] bg-black/95 px-4 py-3 md:hidden">
+          {NAV_LINKS.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setMenuOpen(false)}
+              className={`block py-3 text-sm font-medium transition-colors border-b border-[#1a1a1a] last:border-0 ${
+                pathname.startsWith(href)
+                  ? 'text-white'
+                  : 'text-[#a1a1aa]'
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }

@@ -24,7 +24,7 @@ function RoadmapCard({ roadmap }: Readonly<{ roadmap: ContentRoadmap }>) {
         </div>
 
         {/* Episode stats */}
-        <div className="flex items-center gap-3 text-xs">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="flex items-center gap-1.5 rounded-full border border-[#2a2a2a] bg-[#1a1a1a] px-3 py-1 text-[#a1a1aa]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#52525b]" />
             {roadmap.episodes.length} episodes
@@ -91,11 +91,11 @@ export default function RoadmapsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold text-white">
+      <div className="mb-6 sm:mb-10">
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">
           Learning <span className="gradient-text">Roadmaps</span>
         </h1>
-        <p className="mt-2 text-[#a1a1aa]">
+        <p className="mt-2 text-sm text-[#a1a1aa] sm:text-base">
           AI-generated roadmaps with structured episodes — work through them in order.
         </p>
       </div>

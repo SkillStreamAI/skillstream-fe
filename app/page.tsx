@@ -73,8 +73,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── How it works ─────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <h2 className="mb-12 text-center text-3xl font-bold text-white">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
+        <h2 className="mb-8 text-center text-2xl font-bold text-white sm:mb-12 sm:text-3xl">
           How It Works
         </h2>
         <div className="grid gap-6 sm:grid-cols-3">
@@ -91,14 +91,14 @@ export default function LandingPage() {
       </section>
 
       {/* ── Features ─────────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-        <h2 className="mb-12 text-center text-3xl font-bold text-white">
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:pb-24 sm:px-6 lg:px-8">
+        <h2 className="mb-8 text-center text-2xl font-bold text-white sm:mb-12 sm:text-3xl">
           Everything you need to level up
         </h2>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <div key={f.title} className="gradient-border rounded-xl">
-              <div className="rounded-xl bg-[#111] p-7">
+              <div className="rounded-xl bg-[#111] p-5 sm:p-7">
                 <div className="mb-4 text-3xl">{f.icon}</div>
                 <h3 className="mb-2 text-base font-semibold text-white">{f.title}</h3>
                 <p className="text-sm leading-relaxed text-[#a1a1aa]">{f.desc}</p>
@@ -109,10 +109,10 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────── */}
-      <section className="py-24 text-center px-4">
+      <section className="py-14 sm:py-24 text-center px-4">
         <div className="gradient-border rounded-2xl mx-auto max-w-2xl">
-          <div className="rounded-2xl bg-[#111] px-8 py-14">
-            <h2 className="text-3xl font-bold text-white">
+          <div className="rounded-2xl bg-[#111] px-5 py-10 sm:px-8 sm:py-14">
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">
               Ready to build your roadmap?
             </h2>
             <p className="mt-3 text-[#a1a1aa]">
