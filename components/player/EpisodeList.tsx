@@ -28,7 +28,7 @@ export function EpisodeList({ episodes, currentId, onSelect }: Readonly<EpisodeL
   return (
     <div className="flex flex-col gap-1">
       {episodes.map((ep) => {
-        const playable = ep.status === 'COMPLETED' && !!ep.audioUrl;
+        const playable = (ep.status === 'READY' || ep.status === 'COMPLETED') && !!ep.audioUrl;
         return (
         <button
           key={ep.id}

@@ -50,8 +50,12 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
       audio.pause();
       setPlaying(false);
     } else {
-      audio.play().catch(() => setPlaying(false));
-      setPlaying(true);
+      audio.play()
+        .then(() => setPlaying(true))
+        .catch((err) => {
+          console.error('Audio play failed:', err);
+          setPlaying(false);
+        });
     }
   };
 
