@@ -77,3 +77,17 @@ export interface TrackProgressRequest {
 export interface TrackProgressResponse {
   success: boolean;
 }
+
+export interface TrendSuggestion {
+  topic: string;
+  trend_title: string;
+  reason: string;
+  learning_angle: string;
+}
+
+export interface TrendingSuggestionsResponse {
+  suggestions: TrendSuggestion[];
+  geo: string;
+  source?: string;
+  error?: string;
+}

@@ -4,6 +4,7 @@ import type {
   ProgressData,
   TrackProgressResponse,
   ContentRoadmap,
+  TrendingSuggestionsResponse,
 } from '@/lib/types';
 
 // ── Generic fetch helpers ─────────────────────────────────────
@@ -99,6 +100,18 @@ export async function getContent(): Promise<ContentRoadmap[]> {
   }
 
   throw new Error(`Unexpected response shape: ${JSON.stringify(data).slice(0, 200)}`);
+}
+
+/**
+ * POST {geo} → {suggestions[], geo, source}
+ * Strands Agent fetches Google Trends RSS and returns 5 learning topic suggestions.
+ */
+export async function getTrendingSuggestions(
+  geo = 'US'
+): Promise<TrendingSuggestionsResponse> {
+  const url = process.env.NEXT_PUBLIC_LAMBDA_TRENDS_AGENT_URL ?? '';
+  if (!url) throw new Error('NEXT_PUBLIC_LAMBDA_TRENDS_AGENT_URL is not set');
+  return lambdaPost<{ geo: string }, TrendingSuggestionsResponse>(url, { geo });
 }
 
 /**

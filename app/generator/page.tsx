@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { TopicInput } from '@/components/roadmap/TopicInput';
 import { RoadmapGrid } from '@/components/roadmap/RoadmapGrid';
+import { TrendingSuggestions } from '@/components/agent/TrendingSuggestions';
 import { generateRoadmap } from '@/lib/lambda';
 import type { RoadmapNode } from '@/lib/types';
 
@@ -56,10 +57,11 @@ const MOCK_NODES: RoadmapNode[] = [
 ];
 
 export default function GeneratorPage() {
-  const [nodes, setNodes]     = useState<RoadmapNode[] | null>(null);
-  const [title, setTitle]     = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
+  const [nodes, setNodes]       = useState<RoadmapNode[] | null>(null);
+  const [title, setTitle]       = useState('');
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState('');
+  const [topicValue, setTopicValue] = useState('');
 
   const handleGenerate = async (topic: string) => {
     setLoading(true);
@@ -92,7 +94,17 @@ export default function GeneratorPage() {
         </p>
       </div>
 
-      <TopicInput onSubmit={handleGenerate} loading={loading} />
+      <TrendingSuggestions
+        onSelect={(topic) => setTopicValue(topic)}
+        disabled={loading}
+      />
+
+      <TopicInput
+        onSubmit={handleGenerate}
+        loading={loading}
+        value={topicValue}
+        onChange={setTopicValue}
+      />
 
       {/* Error */}
       {error && (

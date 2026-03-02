@@ -15,10 +15,18 @@ const SUGGESTIONS = [
 interface TopicInputProps {
   onSubmit: (topic: string) => Promise<void>;
   loading: boolean;
+  /** Optional controlled value — used by parent to pre-fill from trending suggestions */
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export function TopicInput({ onSubmit, loading }: TopicInputProps) {
-  const [topic, setTopic] = useState('');
+export function TopicInput({ onSubmit, loading, value: externalValue, onChange: externalOnChange }: Readonly<TopicInputProps>) {
+  const [internalTopic, setInternalTopic] = useState('');
+  const topic = externalValue ?? internalTopic;
+  const setTopic = (v: string) => {
+    setInternalTopic(v);
+    externalOnChange?.(v);
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
