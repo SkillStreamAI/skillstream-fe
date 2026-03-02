@@ -19,6 +19,8 @@ function flattenEpisodes(roadmaps: ContentRoadmap[]): Episode[] {
   const result: Episode[] = [];
   for (const rm of roadmaps) {
     for (const ep of rm.episodes) {
+      // Only include episodes that have audio ready to stream
+      if (!ep.audio_url || (ep.status !== 'COMPLETED' && ep.status !== 'READY')) continue;
       result.push({
         id: ep.id,
         title: ep.title,
