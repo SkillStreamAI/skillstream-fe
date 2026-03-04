@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 
+// Extend Vercel function timeout — Strands agent makes multiple Bedrock
+// calls and can take up to 120s. Default is 10s (hobby) / 60s (pro).
+export const maxDuration = 120;
+
 const TRENDS_AGENT_URL = process.env.NEXT_PUBLIC_LAMBDA_TRENDS_AGENT_URL ?? '';
 
 export async function POST(req: Request) {
@@ -18,6 +22,16 @@ export async function POST(req: Request) {
     // Allow up to 120s — the Strands agent makes multiple Bedrock calls
     signal: AbortSignal.timeout(125_000),
   });
+
+  const contentType = res.headers.get('Content-Type') ?? '';
+  if (!contentType.includes('application/json')) {
+    const text = await res.text();
+    console.error('Trends Lambda returned non-JSON:', res.status, text.slice(0, 300));
+    return NextResponse.json(
+      { error: `Lambda error (${res.status}): ${text.slice(0, 200)}`, suggestions: [] },
+      { status: 502 }
+    );
+  }
 
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });
