@@ -33,6 +33,14 @@ export async function POST(req: Request) {
     );
   }
 
-  const data = await res.json();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: any = await res.json();
+
+  // Unwrap Lambda envelope: {statusCode, headers, body: "<json string>"}
+  if (data?.body !== undefined) {
+    const payload = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
+    return NextResponse.json(payload, { status: res.status });
+  }
+
   return NextResponse.json(data, { status: res.status });
 }

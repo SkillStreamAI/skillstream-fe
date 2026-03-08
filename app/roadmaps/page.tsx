@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getContent } from '@/lib/lambda';
 import type { ContentRoadmap } from '@/lib/types';
+import { TrendingSuggestions } from '@/components/agent/TrendingSuggestions';
 
 function RoadmapCard({ roadmap }: Readonly<{ roadmap: ContentRoadmap }>) {
   const readyCount    = roadmap.episodes.filter((e) => e.status === 'READY').length;
@@ -100,6 +101,8 @@ export default function RoadmapsPage() {
         </p>
       </div>
 
+      <TrendingSuggestions onSelect={() => {}} />
+
       {error && (
         <div className="mb-6 rounded-xl bg-red-950/40 px-4 py-3 text-sm text-red-400 border border-red-900/40">
           {error}
@@ -119,12 +122,7 @@ export default function RoadmapsPage() {
         <div className="flex flex-col items-center gap-4 py-20 text-center">
           <div className="text-4xl">📭</div>
           <p className="text-[#a1a1aa]">No roadmaps yet.</p>
-          <Link
-            href="/generator"
-            className="text-sm font-medium text-[#7c3aed] hover:text-[#2563eb] transition-colors"
-          >
-            Generate your first roadmap →
-          </Link>
+          <p className="text-sm text-[#52525b]">Check back soon — roadmaps are generated automatically.</p>
         </div>
       )}
 

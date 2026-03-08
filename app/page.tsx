@@ -60,7 +60,7 @@ export default function LandingPage() {
             No more analysis paralysis — just clear, ordered episodes that fit into your day.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link href="/generator">
+            <Link href="/roadmaps">
               <Button size="lg">Start Learning Free</Button>
             </Link>
             <Link href="/player">
