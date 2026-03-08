@@ -118,16 +118,7 @@ export default function LandingPage() {
             <p className="mt-3 text-[#a1a1aa]">
               Free to use. Backed by AWS. Always evolving.
             </p>
-            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Link href="/generator">
-                <Button size="lg">Generate My Roadmap</Button>
-              </Link>
-              <Link href="/login">
-                <Button size="lg" variant="ghost">
-                  Create Account
-                </Button>
-              </Link>
-            </div>
+          
           </div>
         </div>
       </section>
