@@ -2,26 +2,25 @@
 import { useState, useEffect } from 'react';
 import { AudioPlayer } from '@/components/player/AudioPlayer';
 import { EpisodeList } from '@/components/player/EpisodeList';
+import type { CourseGroup } from '@/components/player/EpisodeList';
 import { getContent } from '@/lib/lambda';
 import type { ContentRoadmap, Episode } from '@/lib/types';
 
-// Extracted to avoid nesting deeper than 4 levels inside the component
 function proxyAudioUrl(s3Url: string | null): string {
   if (!s3Url) return '';
-  // The Lambda/Bedrock output sometimes stores URLs with embedded markdown link
-  // syntax, e.g. https://bucket[.s3.amazonaws.com/](https://.s3.amazonaws.com/)key.mp3
-  // Strip it so fetch() receives a valid URL.
   const sanitized = s3Url.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
   return `/api/audio?url=${encodeURIComponent(sanitized)}`;
 }
 
-function flattenEpisodes(roadmaps: ContentRoadmap[]): Episode[] {
-  const result: Episode[] = [];
+function groupByCourse(roadmaps: ContentRoadmap[]): { courses: CourseGroup[]; allEpisodes: Episode[] } {
+  const courses: CourseGroup[] = [];
+  const allEpisodes: Episode[] = [];
+
   for (const rm of roadmaps) {
+    const episodes: Episode[] = [];
     for (const ep of rm.episodes) {
-      // Only include episodes that have audio ready to stream
       if (!ep.audio_url || (ep.status !== 'COMPLETED' && ep.status !== 'READY')) continue;
-      result.push({
+      const mapped: Episode = {
         id: ep.id,
         title: ep.title,
         topic: rm.topic,
@@ -31,21 +30,32 @@ function flattenEpisodes(roadmaps: ContentRoadmap[]): Episode[] {
         createdAt: '',
         overview: ep.overview,
         status: ep.status,
-      });
+      };
+      episodes.push(mapped);
+      allEpisodes.push(mapped);
+    }
+    if (episodes.length > 0) {
+      courses.push({ id: rm.id, title: rm.title, topic: rm.topic, episodes });
     }
   }
-  return result;
+
+  return { courses, allEpisodes };
 }
 
 export default function PlayerPage() {
-  const [episodes, setEpisodes]   = useState<Episode[]>([]);
+  const [courses, setCourses]     = useState<CourseGroup[]>([]);
+  const [allEpisodes, setAll]     = useState<Episode[]>([]);
   const [current, setCurrent]     = useState<Episode | null>(null);
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState('');
 
   useEffect(() => {
     getContent()
-      .then((roadmaps) => setEpisodes(flattenEpisodes(roadmaps)))
+      .then((roadmaps) => {
+        const { courses: c, allEpisodes: all } = groupByCourse(roadmaps);
+        setCourses(c);
+        setAll(all);
+      })
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : String(err);
         console.error('getContent failed:', msg);
@@ -54,14 +64,15 @@ export default function PlayerPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Auto-advance to next episode when current ends
   const handleEnded = () => {
     if (!current) return;
-    const idx = episodes.findIndex((e) => e.id === current.id);
-    if (idx >= 0 && idx < episodes.length - 1) {
-      setCurrent(episodes[idx + 1]);
+    const idx = allEpisodes.findIndex((e) => e.id === current.id);
+    if (idx >= 0 && idx < allEpisodes.length - 1) {
+      setCurrent(allEpisodes[idx + 1]);
     }
   };
+
+  const totalEpisodes = allEpisodes.length;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:py-12 sm:px-6 lg:px-8">
@@ -74,14 +85,12 @@ export default function PlayerPage() {
         </p>
       </div>
 
-      {/* Error */}
       {error && (
         <div className="mb-6 rounded-xl bg-red-950/40 px-4 py-3 text-sm text-red-400 border border-red-900/40">
           {error}
         </div>
       )}
 
-      {/* Loading */}
       {loading && (
         <div className="flex justify-center py-20">
           <div
@@ -93,24 +102,24 @@ export default function PlayerPage() {
 
       {!loading && (
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-[360px_1fr]">
-          {/* Audio player — first on mobile so it's visible after episode selection */}
+          {/* Audio player */}
           <div className="order-1 lg:order-2 gradient-border rounded-xl">
             <div className="rounded-xl bg-[#111] p-4 sm:p-8">
               <AudioPlayer episode={current} onEnded={handleEnded} />
             </div>
           </div>
 
-          {/* Episode list — second on mobile, first column on desktop */}
+          {/* Course / episode list */}
           <div className="order-2 lg:order-1 gradient-border rounded-xl">
             <div className="flex h-[50vh] min-h-[280px] flex-col rounded-xl bg-[#111] lg:h-[calc(100vh-240px)] lg:min-h-[400px]">
               <div className="border-b border-[#2a2a2a] px-4 py-3">
                 <p className="text-xs font-semibold uppercase tracking-widest text-[#52525b]">
-                  Episodes ({episodes.length})
+                  {courses.length} Course{courses.length === 1 ? '' : 's'} · {totalEpisodes} Episode{totalEpisodes === 1 ? '' : 's'}
                 </p>
               </div>
               <div className="flex-1 overflow-y-auto p-3">
                 <EpisodeList
-                  episodes={episodes}
+                  courses={courses}
                   currentId={current?.id ?? null}
                   onSelect={setCurrent}
                 />
