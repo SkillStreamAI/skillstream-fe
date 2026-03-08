@@ -111,15 +111,7 @@ export default function LandingPage() {
       {/* ── CTA ──────────────────────────────────────────── */}
       <section className="py-14 sm:py-24 text-center px-4">
         <div className="gradient-border rounded-2xl mx-auto max-w-2xl">
-          <div className="rounded-2xl bg-[#111] px-5 py-10 sm:px-8 sm:py-14">
-            <h2 className="text-2xl font-bold text-white sm:text-3xl">
-              Ready to build your roadmap?
-            </h2>
-            <p className="mt-3 text-[#a1a1aa]">
-              Free to use. Backed by AWS. Always evolving.
-            </p>
-          
-          </div>
+         
         </div>
       </section>
     </>
