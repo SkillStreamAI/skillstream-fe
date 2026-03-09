@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:21st.dev)",
+      "WebFetch(domain:www.21st.dev)",
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "WebFetch(domain:andy-cinquin.com)"
+    ]
+  }
+}

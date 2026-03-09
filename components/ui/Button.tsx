@@ -1,7 +1,7 @@
 'use client';
 import type { ButtonHTMLAttributes } from 'react';
 
-type Variant = 'gradient' | 'outline' | 'ghost';
+type Variant = 'primary' | 'outline' | 'ghost' | 'gradient';
 type Size = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -11,14 +11,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
+  // Solid amber — the one CTA that demands attention
+  primary:
+    'bg-[#e8a020] text-black font-semibold ' +
+    'hover:bg-[#f5b030] active:scale-[0.98] transition-all shadow-lg shadow-[#e8a020]/20',
+  // Keep 'gradient' as alias for primary so old usage doesn't break
   gradient:
-    'bg-[linear-gradient(135deg,#7c3aed,#2563eb,#0d9488)] text-white font-semibold ' +
-    'shadow-lg shadow-purple-900/30 hover:opacity-90 active:scale-[0.98] transition-all',
+    'bg-[#e8a020] text-black font-semibold ' +
+    'hover:bg-[#f5b030] active:scale-[0.98] transition-all shadow-lg shadow-[#e8a020]/20',
   outline:
-    'border border-[#2a2a2a] bg-transparent text-[#ededed] ' +
-    'hover:border-[#7c3aed] hover:text-white transition-colors',
+    'border border-[#2c2828] bg-transparent text-[#f5f0eb] ' +
+    'hover:border-[#e8a020]/50 hover:text-white transition-colors',
   ghost:
-    'bg-transparent text-[#a1a1aa] hover:text-white hover:bg-[#1a1a1a] transition-colors',
+    'bg-transparent text-[#9e9792] hover:text-white hover:bg-[#1e1c1c] transition-colors',
 };
 
 const sizeClasses: Record<Size, string> = {
@@ -28,7 +33,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 export function Button({
-  variant = 'gradient',
+  variant = 'primary',
   size = 'md',
   loading = false,
   disabled,
@@ -51,7 +56,7 @@ export function Button({
       {loading ? (
         <span className="flex items-center gap-2">
           <span
-            className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white"
+            className="h-4 w-4 rounded-full border-2 border-black/30 border-t-black"
             style={{ animation: 'spin 0.8s linear infinite' }}
           />
           Loading…

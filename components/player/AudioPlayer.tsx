@@ -13,7 +13,6 @@ function formatTime(sec: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-// Generate deterministic bar heights from episode id (avoids hydration mismatch)
 function barsFromId(id: string, count: number): { key: string; height: number }[] {
   return Array.from({ length: count }, (_, i) => {
     const code = (id.codePointAt(i % id.length) ?? 0 + i * 17) % 100;
@@ -27,7 +26,6 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
   const [current, setCurrent]   = useState(0);
   const [duration, setDuration] = useState(0);
 
-  // Reset player state whenever the episode changes
   useEffect(() => {
     setPlaying(false);
     setCurrent(0);
@@ -38,10 +36,7 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
     }
   }, [episode?.id]);
 
-  const bars = useMemo(
-    () => barsFromId(episode?.id ?? 'empty', 40),
-    [episode?.id]
-  );
+  const bars = useMemo(() => barsFromId(episode?.id ?? 'empty', 40), [episode?.id]);
 
   const toggle = () => {
     const audio = audioRef.current;
@@ -52,10 +47,7 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
     } else {
       audio.play()
         .then(() => setPlaying(true))
-        .catch((err) => {
-          console.error('Audio play failed:', err);
-          setPlaying(false);
-        });
+        .catch((err) => { console.error('Audio play failed:', err); setPlaying(false); });
     }
   };
 
@@ -66,9 +58,11 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
 
   if (!episode) {
     return (
-      <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-3 text-[#52525b]">
-        <div className="text-4xl">🎙️</div>
-        <p className="text-sm">Select an episode to start listening</p>
+      <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-3 text-[#5a5450]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#2c2828] bg-[#1e1c1c] text-2xl">
+          🎙️
+        </div>
+        <p className="text-sm text-[#9e9792]">Select an episode to start listening</p>
       </div>
     );
   }
@@ -79,13 +73,13 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
     <div className="flex flex-col gap-6">
       {/* Episode info */}
       <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-[#7c3aed]">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#e8a020]">
           Now Playing
         </p>
-        <h2 className="mt-1 text-xl font-bold text-white leading-snug">
+        <h2 className="mt-1.5 text-xl font-bold text-[#f5f0eb] leading-snug">
           {episode.title}
         </h2>
-        <p className="mt-0.5 text-sm capitalize text-[#a1a1aa]">
+        <p className="mt-1 text-sm capitalize text-[#9e9792]">
           {episode.topic}
           {episode.level ? ` · ${episode.level}` : ''}
           {duration > 0 ? ` · ${formatTime(duration)}` : ''}
@@ -93,17 +87,14 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
       </div>
 
       {/* Waveform visualizer */}
-      <div className="flex h-16 items-end gap-0.5 rounded-xl bg-[#1a1a1a] px-4 py-3">
+      <div className="flex h-14 items-end gap-px rounded-xl bg-[#1e1c1c] px-4 py-2.5">
         {bars.map(({ key, height }, i) => (
           <div
             key={key}
-            className="flex-1 rounded-full transition-all"
+            className="flex-1 rounded-full transition-all duration-150"
             style={{
               height: `${height}%`,
-              background:
-                progress > i / bars.length
-                  ? 'linear-gradient(to top, #7c3aed, #2563eb)'
-                  : '#2a2a2a',
+              background: progress > i / bars.length ? '#e8a020' : '#2c2828',
             }}
           />
         ))}
@@ -119,7 +110,7 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
           onChange={(e) => handleSeek(Number(e.target.value))}
           className="w-full cursor-pointer"
         />
-        <div className="flex items-center justify-between text-xs text-[#52525b]">
+        <div className="flex items-center justify-between text-xs text-[#5a5450]">
           <span>{formatTime(current)}</span>
           <span>{formatTime(duration)}</span>
         </div>
@@ -130,24 +121,20 @@ export function AudioPlayer({ episode, onEnded }: AudioPlayerProps) {
         <button
           onClick={toggle}
           className="flex h-14 w-14 items-center justify-center rounded-full cursor-pointer
-            bg-[linear-gradient(135deg,#7c3aed,#2563eb)] text-white text-xl
-            shadow-lg shadow-purple-900/40 hover:opacity-90 active:scale-95 transition-all"
+            bg-[#e8a020] text-black text-lg font-bold
+            shadow-lg shadow-[#e8a020]/20 hover:bg-[#f5b030] active:scale-95 transition-all"
           aria-label={playing ? 'Pause' : 'Play'}
         >
           {playing ? '⏸' : '▶'}
         </button>
       </div>
 
-      {/* Hidden audio element */}
       <audio
         ref={audioRef}
         src={episode.audioUrl || undefined}
         onTimeUpdate={(e) => setCurrent(e.currentTarget.currentTime)}
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-        onEnded={() => {
-          setPlaying(false);
-          onEnded?.();
-        }}
+        onEnded={() => { setPlaying(false); onEnded?.(); }}
       >
         <track kind="captions" />
       </audio>

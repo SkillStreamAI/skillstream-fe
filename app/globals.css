@@ -2,31 +2,28 @@
 
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
-  --background:    #0a0a0a;
-  --foreground:    #ededed;
-  --surface:       #111111;
-  --surface-hover: #1a1a1a;
-  --border:        #2a2a2a;
+  --background:    #0d0c0c;
+  --surface:       #161414;
+  --surface-2:     #1e1c1c;
+  --border:        #2c2828;
+  --border-subtle: #221f1f;
 
-  --purple: #7c3aed;
-  --blue:   #2563eb;
-  --teal:   #0d9488;
+  --amber:     #e8a020;
+  --amber-dim: #c47d10;
 
-  --gradient-hero: linear-gradient(135deg, #7c3aed 0%, #2563eb 50%, #0d9488 100%);
-  --gradient-card: linear-gradient(135deg, #7c3aed, #2563eb, #0d9488);
-  --gradient-text: linear-gradient(90deg, #7c3aed, #2563eb, #0d9488);
+  --text-1: #f5f0eb;
+  --text-2: #9e9792;
+  --text-3: #5a5450;
 }
 
 @theme inline {
-  --color-background:   var(--background);
-  --color-foreground:   var(--foreground);
-  --color-surface:      var(--surface);
-  --color-border:       var(--border);
-  --color-purple:       var(--purple);
-  --color-blue:         var(--blue);
-  --color-teal:         var(--teal);
-  --font-sans:          var(--font-geist-sans);
-  --font-mono:          var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--text-1);
+  --color-surface:    var(--surface);
+  --color-border:     var(--border);
+  --color-amber:      var(--amber);
+  --font-sans:        var(--font-geist-sans);
+  --font-mono:        var(--font-geist-mono);
 }
 
 /* ── Base ──────────────────────────────────────────────────── */
@@ -34,55 +31,95 @@ html { scroll-behavior: smooth; }
 
 body {
   background-color: var(--background);
-  color: var(--foreground);
+  color: var(--text-1);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
-/* ── Gradient Text ─────────────────────────────────────────── */
+/* ── Gradient Text — brand name only ───────────────────────── */
 .gradient-text {
-  background: var(--gradient-text);
+  background: linear-gradient(90deg, #e8a020, #f5c547, #e8a020);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* ── Gradient Card Border ──────────────────────────────────── */
-/* Wrap card in <div class="gradient-border rounded-xl"> then
-   put the card itself with bg-[#111] inside. The 1px of gradient
-   showing around the card creates the border effect. */
-.gradient-border {
-  background: var(--gradient-card);
+/* ── Card border — thin single-color ring ──────────────────── */
+/* Outer wrapper: background = border color, padding = 1px     */
+/* Inner div: bg-[#161414] fills it, showing 1px ring          */
+.card-border {
+  background: var(--border);
   padding: 1px;
-  border-radius: 0.75rem; /* matches rounded-xl */
+  border-radius: 1rem; /* rounded-2xl */
 }
 
-/* ── Animated Hero Background ──────────────────────────────── */
+/* Amber ring — for active / playing cards */
+.card-border-active {
+  background: linear-gradient(135deg, #e8a020, #c47d10, #e8a020);
+  background-size: 300% 300%;
+  padding: 1px;
+  border-radius: 1rem;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Legacy alias — keeps old usage working */
+.gradient-border         { background: var(--border); padding: 1px; border-radius: 0.75rem; }
+.gradient-border-animated {
+  background: linear-gradient(135deg, #e8a020, #c47d10, #e8a020);
+  background-size: 300% 300%;
+  padding: 1px; border-radius: 1rem;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* ── Hero — dark radial glow, no animated rainbow ──────────── */
+.hero-gradient {
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -10%, #e8a02018 0%, transparent 65%),
+    #0d0c0c;
+}
+
+/* ── Glassy Navbar ─────────────────────────────────────────── */
+.glass {
+  background: rgba(13, 12, 12, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* ── Animations ────────────────────────────────────────────── */
 @keyframes gradient-shift {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-.hero-gradient {
-  background: linear-gradient(-45deg, #7c3aed, #2563eb, #0d9488, #1e1b4b);
-  background-size: 400% 400%;
-  animation: gradient-shift 8s ease infinite;
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Glassy Navbar ─────────────────────────────────────────── */
-.glass {
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
-
-/* ── Spin animation for loading spinners ───────────────────── */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-/* ── Audio range input accent ──────────────────────────────── */
-input[type="range"] {
-  accent-color: var(--purple);
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0   0   rgba(232, 160, 32, 0.00); }
+  50%       { box-shadow: 0 0 20px 6px rgba(232, 160, 32, 0.12); }
 }
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* ── Utility classes ───────────────────────────────────────── */
+.card-fade-in  { animation: fade-in-up 0.35s ease both; }
+.glow-active   { animation: glow-pulse 2.5s ease-in-out infinite; }
+
+.shimmer-hover {
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
+  background-size: 200% 100%;
+}
+.shimmer-hover:hover { animation: shimmer 0.7s ease; }
+
+/* ── Audio range input ─────────────────────────────────────── */
+input[type="range"] { accent-color: var(--amber); }
