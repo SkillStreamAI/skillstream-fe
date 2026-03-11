@@ -61,7 +61,8 @@ function ChaptersList() {
   useEffect(() => {
     getContent()
       .then((roadmaps: ContentRoadmap[]) => {
-        const filtered = roadmaps.filter((r) => r.generated_by === 'trends_agent');
+        const tagged = roadmaps.filter((r) => r.generated_by === 'trends_agent');
+        const filtered = tagged.length > 0 ? tagged : roadmaps;
         const rows: ChapterRow[] = filtered.flatMap((r) =>
           r.episodes.map((ep) => ({ ...ep, roadmapTopic: r.topic })),
         );
