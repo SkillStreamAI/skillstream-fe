@@ -61,10 +61,10 @@ function ChaptersList() {
   useEffect(() => {
     getContent()
       .then((roadmaps: ContentRoadmap[]) => {
-        const tagged = roadmaps.filter((r) => r.generated_by === 'trends_agent');
-        const filtered = tagged.length > 0 ? tagged : roadmaps;
-        const rows: ChapterRow[] = filtered.flatMap((r) =>
-          r.episodes.map((ep) => ({ ...ep, roadmapTopic: r.topic })),
+        const rows: ChapterRow[] = roadmaps.flatMap((r) =>
+          r.episodes
+            .filter((ep) => ep.generated_by === 'trends_agent')
+            .map((ep) => ({ ...ep, roadmapTopic: r.topic })),
         );
         rows.sort((a, b) => {
           if (!a.created_at) return 1;
@@ -118,15 +118,6 @@ function ChaptersList() {
                 {ch.created_at && (
                   <span className="inline-flex items-center gap-1 rounded-full border border-[#2c2828] bg-[#1e1c1c] px-2 py-0.5 text-[10px] text-[#5a5450]">
                     {formatDate(ch.created_at)}
-                  </span>
-                )}
-                {ch.status && (
-                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider border ${
-                    ch.status === 'COMPLETED' || ch.status === 'READY'
-                      ? 'border-emerald-800/40 bg-emerald-950/30 text-emerald-400'
-                      : 'border-[#e8a020]/25 bg-[#e8a020]/8 text-[#e8a020]'
-                  }`}>
-                    {ch.status === 'COMPLETED' || ch.status === 'READY' ? 'Ready' : ch.status.replace(/_/g, ' ').toLowerCase()}
                   </span>
                 )}
               </div>

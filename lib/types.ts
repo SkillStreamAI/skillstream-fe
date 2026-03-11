@@ -39,6 +39,7 @@ export interface ContentEpisode {
   audio_url: string | null;
   status: string;
   created_at?: string;
+  generated_by?: string;
 }
 
 export interface ContentRoadmap {
@@ -47,7 +48,6 @@ export interface ContentRoadmap {
   title: string;
   description: string;
   episodes: ContentEpisode[];
-  generated_by?: string;
 }
 
 export interface User {
