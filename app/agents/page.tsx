@@ -1,7 +1,7 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
-import Link from 'next/link';
-import type { TrendSuggestion } from '@/lib/types';
+import { useState, useEffect } from 'react';
+import type { ContentRoadmap, ContentEpisode } from '@/lib/types';
+import { getContent } from '@/lib/lambda';
 
 const AGENTS = [
   {
@@ -24,138 +24,116 @@ const AGENTS = [
   },
 ];
 
-function SkeletonCard() {
+interface ChapterRow extends ContentEpisode {
+  roadmapTopic: string;
+}
+
+function formatDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+function ChapterSkeletonRow() {
   return (
-    <div className="rounded-2xl border border-[#2c2828] bg-[#161414] p-5 animate-pulse">
-      <div className="mb-3 h-5 w-24 rounded-full bg-[#1e1c1c]" />
-      <div className="mb-2 h-4 w-3/4 rounded bg-[#1e1c1c]" />
+    <div className="flex flex-col gap-2 border-b border-[#2c2828] py-4 animate-pulse last:border-b-0">
+      <div className="flex items-center gap-3">
+        <div className="h-4 w-48 rounded bg-[#1e1c1c]" />
+        <div className="h-4 w-24 rounded bg-[#1e1c1c]" />
+      </div>
       <div className="h-3 w-full rounded bg-[#1e1c1c]" />
-      <div className="mt-1 h-3 w-5/6 rounded bg-[#1e1c1c]" />
-      <div className="mt-4 h-3 w-2/3 rounded bg-[#1e1c1c]" />
+      <div className="h-3 w-4/5 rounded bg-[#1e1c1c]" />
     </div>
   );
 }
 
-function TrendCard({ s, idx }: Readonly<{ s: TrendSuggestion; idx: number }>) {
-  return (
-    <div
-      className="card-fade-in flex flex-col rounded-2xl border border-[#2c2828] bg-[#161414] p-5 gap-4 transition-colors hover:bg-[#1a1818] hover:border-[#3a3535]"
-      style={{ animationDelay: `${idx * 80}ms` }}
-    >
-      {/* Topic + index */}
-      <div className="flex items-start justify-between gap-3">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#e8a020]/25 bg-[#e8a020]/8 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#e8a020]">
-          <span className="h-1 w-1 rounded-full bg-[#e8a020]" />
-          {s.topic}
-        </span>
-        <span className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-[#1e1c1c] text-[10px] font-bold text-[#5a5450]">
-          {idx + 1}
-        </span>
-      </div>
+function ChaptersList() {
+  const [chapters, setChapters] = useState<ChapterRow[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState('');
 
-      {/* Trend title */}
-      <p className="text-sm font-semibold text-[#f5f0eb] leading-snug">{s.trend_title}</p>
-
-      {/* Why it's trending */}
-      <div className="flex flex-col gap-1">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-[#5a5450]">Why it&apos;s trending</p>
-        <p className="text-xs text-[#9e9792] leading-relaxed">{s.reason}</p>
-      </div>
-
-      {/* Learning angle */}
-      <div className="mt-auto rounded-xl border border-[#e8a020]/15 bg-[#e8a020]/5 p-3 flex flex-col gap-1">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-[#e8a020]">Learning angle</p>
-        <p className="text-xs text-[#c8900a] leading-relaxed">{s.learning_angle}</p>
-      </div>
-
-      {/* CTA */}
-      <Link
-        href="/roadmaps"
-        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#2c2828]
-          px-4 py-2 text-xs font-medium text-[#9e9792] transition-all
-          hover:border-[#e8a020]/30 hover:text-[#f5f0eb] hover:bg-[#1e1c1c]"
-      >
-        View roadmaps
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </Link>
-    </div>
-  );
-}
-
-function TrendsPanel() {
-  const [suggestions, setSuggestions] = useState<TrendSuggestion[]>([]);
-  const [loading, setLoading]         = useState(true);
-  const [error, setError]             = useState('');
-  const [source, setSource]           = useState('');
-
-  const doFetch = useCallback(async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const res  = await fetch('/api/trends', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ geo: 'US' }),
-      });
-      const data = await res.json() as { suggestions?: TrendSuggestion[]; source?: string; error?: string };
-      if (data.suggestions?.length) {
-        setSuggestions(data.suggestions.slice(0, 5));
-        setSource(data.source ?? '');
-      } else {
-        setError(data.error ?? 'No suggestions returned');
-      }
-    } catch {
-      setError('Could not reach the trends agent');
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    getContent()
+      .then((roadmaps: ContentRoadmap[]) => {
+        const filtered = roadmaps.filter((r) => r.generated_by === 'trends_agent');
+        const rows: ChapterRow[] = filtered.flatMap((r) =>
+          r.episodes.map((ep) => ({ ...ep, roadmapTopic: r.topic })),
+        );
+        rows.sort((a, b) => {
+          if (!a.created_at) return 1;
+          if (!b.created_at) return -1;
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        });
+        setChapters(rows);
+      })
+      .catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        setError(msg);
+      })
+      .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => { void doFetch(); }, [doFetch]);
 
   return (
     <div className="mt-6">
-      <div className="mb-5 flex items-center justify-between">
-        <div>
-          <p className="text-sm font-semibold text-[#f5f0eb]">Trending Topics</p>
-          {source && <p className="mt-0.5 text-xs text-[#5a5450]">via {source}</p>}
-        </div>
-        <button
-          onClick={() => void doFetch()}
-          disabled={loading}
-          className="flex items-center gap-1.5 rounded-full border border-[#2c2828] bg-[#161414] px-3 py-1.5
-            text-xs text-[#9e9792] transition-all hover:border-[#e8a020]/30 hover:text-[#f5f0eb]
-            disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-        >
-          <svg
-            width="11" height="11" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-            style={loading ? { animation: 'spin 0.8s linear infinite' } : undefined}
-          >
-            <path d="M21 2v6h-6" /><path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
-            <path d="M3 22v-6h6" /><path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
-          </svg>
-          Refresh
-        </button>
+      <div className="mb-4">
+        <p className="text-sm font-semibold text-[#f5f0eb]">Trending Topics</p>
+        <p className="mt-0.5 text-xs text-[#5a5450]">Audio episodes generated by the Trends Agent</p>
       </div>
 
-      {!loading && error && (
-        <div className="mb-4 rounded-xl border border-red-900/30 bg-red-950/20 px-4 py-3 text-sm text-red-400">
-          {error}{' '}
-          <button onClick={() => void doFetch()} className="underline hover:text-red-300 cursor-pointer">
-            Retry
-          </button>
+      {loading && (
+        <div>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <ChapterSkeletonRow key={i} />
+          ))}
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {loading
-          ? Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
-          : suggestions.map((s, i) => <TrendCard key={s.topic} s={s} idx={i} />)
-        }
-      </div>
+      {!loading && error && (
+        <div className="rounded-xl border border-red-900/30 bg-red-950/20 px-4 py-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && chapters.length === 0 && (
+        <p className="text-xs text-[#5a5450]">No chapters found yet.</p>
+      )}
+
+      {!loading && !error && chapters.length > 0 && (
+        <div className="divide-y divide-[#2c2828]">
+          {chapters.map((ch, idx) => (
+            <div
+              key={ch.id}
+              className="card-fade-in flex flex-col gap-1.5 py-4 first:pt-0 last:pb-0"
+              style={{ animationDelay: `${idx * 60}ms` }}
+            >
+              <div className="flex items-center gap-3 flex-wrap">
+                <p className="text-sm font-semibold text-[#f5f0eb] leading-snug">{ch.title}</p>
+                {ch.created_at && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-[#2c2828] bg-[#1e1c1c] px-2 py-0.5 text-[10px] text-[#5a5450]">
+                    {formatDate(ch.created_at)}
+                  </span>
+                )}
+                {ch.status && (
+                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider border ${
+                    ch.status === 'COMPLETED' || ch.status === 'READY'
+                      ? 'border-emerald-800/40 bg-emerald-950/30 text-emerald-400'
+                      : 'border-[#e8a020]/25 bg-[#e8a020]/8 text-[#e8a020]'
+                  }`}>
+                    {ch.status === 'COMPLETED' || ch.status === 'READY' ? 'Ready' : ch.status.replace(/_/g, ' ').toLowerCase()}
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-[#9e9792] leading-relaxed">{ch.overview}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -250,7 +228,7 @@ export default function AgentsPage() {
                 <p className="mt-1 text-sm text-[#9e9792] max-w-lg">{AGENTS[0].description}</p>
               </div>
             </div>
-            <TrendsPanel />
+            <ChaptersList />
           </div>
         </div>
       )}
