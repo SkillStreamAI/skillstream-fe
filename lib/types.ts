@@ -38,6 +38,8 @@ export interface ContentEpisode {
   overview: string;
   audio_url: string | null;
   status: string;
+  created_at?: string;
+  generated_by?: string;
 }
 
 export interface ContentRoadmap {
