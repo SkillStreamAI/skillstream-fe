@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="amber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5c547"/>
+      <stop offset="100%" stop-color="#e8a020"/>
+    </linearGradient>
+  </defs>
+  <!-- Warm dark background -->
+  <rect width="32" height="32" rx="7" fill="#0d0c0c"/>
+  <!-- Bold "S" centered -->
+  <text
+    x="16"
+    y="24"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-weight="bold"
+    font-size="26"
+    text-anchor="middle"
+    fill="url(#amber)"
+  >S</text>
+</svg>
