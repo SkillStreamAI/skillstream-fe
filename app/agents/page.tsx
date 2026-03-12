@@ -19,7 +19,7 @@ const AGENTS = [
     tagline: 'Keeps your library fresh without manual effort',
     description:
       'Monitors published roadmaps, detects stale content, and triggers re-generation automatically via Step Functions.',
-    live: false,
+    live: true,
     poweredBy: ['Step Functions', 'DynamoDB', 'EventBridge'],
   },
 ];
@@ -130,6 +130,87 @@ function ChaptersList() {
   );
 }
 
+function RoadmapSkeletonRow() {
+  return (
+    <div className="flex items-center justify-between border-b border-[#2c2828] py-3 animate-pulse last:border-b-0">
+      <div className="h-4 w-48 rounded bg-[#1e1c1c]" />
+      <div className="h-3 w-24 rounded bg-[#1e1c1c]" />
+    </div>
+  );
+}
+
+function ContentLifecyclePanel() {
+  const [roadmaps, setRoadmaps] = useState<ContentRoadmap[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState('');
+
+  useEffect(() => {
+    getContent()
+      .then((data: ContentRoadmap[]) => setRoadmaps(data))
+      .catch((err: unknown) => setError(err instanceof Error ? err.message : String(err)))
+      .finally(() => setLoading(false));
+  }, []);
+
+  function lastUpdated(roadmap: ContentRoadmap): string | null {
+    const dates = roadmap.episodes
+      .map((ep) => ep.created_at)
+      .filter((d): d is string => !!d)
+      .map((d) => new Date(d).getTime())
+      .filter((t) => !isNaN(t));
+    if (dates.length === 0) return null;
+    return formatDate(new Date(Math.max(...dates)).toISOString());
+  }
+
+  return (
+    <div className="mt-6">
+      <div className="mb-4">
+        <p className="text-sm font-semibold text-[#f5f0eb]">Roadmap Library</p>
+        <p className="mt-0.5 text-xs text-[#5a5450]">Last content update per roadmap</p>
+      </div>
+
+      {loading && (
+        <div>
+          {Array.from({ length: 5 }).map((_, i) => <RoadmapSkeletonRow key={i} />)}
+        </div>
+      )}
+
+      {!loading && error && (
+        <div className="rounded-xl border border-red-900/30 bg-red-950/20 px-4 py-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && roadmaps.length === 0 && (
+        <p className="text-xs text-[#5a5450]">No roadmaps found.</p>
+      )}
+
+      {!loading && !error && roadmaps.length > 0 && (
+        <div className="divide-y divide-[#2c2828]">
+          {roadmaps.map((rm, idx) => {
+            const date = lastUpdated(rm);
+            return (
+              <div
+                key={rm.id}
+                className="card-fade-in flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
+                style={{ animationDelay: `${idx * 50}ms` }}
+              >
+                <p className="text-sm text-[#f5f0eb] font-medium leading-snug">{rm.title || rm.topic}</p>
+                {date ? (
+                  <span className="shrink-0 inline-flex items-center gap-1 rounded-full border border-[#2c2828] bg-[#1e1c1c] px-2 py-0.5 text-[10px] text-[#5a5450]">
+                    {date}
+                  </span>
+                ) : (
+                  <span className="shrink-0 text-[10px] text-[#3a3535]">—</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AgentsPage() {
   const [activeAgent, setActiveAgent] = useState('trends');
 
@@ -205,6 +286,26 @@ export default function AgentsPage() {
       </div>
 
       {/* Active agent output */}
+      {activeAgent === 'content' && (
+        <div className="gradient-border rounded-2xl">
+          <div className="rounded-2xl bg-[#161414] p-5 sm:p-8">
+            <div className="flex items-start gap-3 flex-wrap">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-bold text-[#f5f0eb]">Content Lifecycle Agent</h2>
+                  <span className="flex items-center gap-1 rounded-full border border-emerald-800/40 bg-emerald-950/30 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Running
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-[#9e9792] max-w-lg">{AGENTS[1].description}</p>
+              </div>
+            </div>
+            <ContentLifecyclePanel />
+          </div>
+        </div>
+      )}
+
       {activeAgent === 'trends' && (
         <div className="gradient-border rounded-2xl">
           <div className="rounded-2xl bg-[#161414] p-5 sm:p-8">
