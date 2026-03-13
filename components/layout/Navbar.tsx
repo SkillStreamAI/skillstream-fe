@@ -51,7 +51,7 @@ export function Navbar() {
 
         {/* Right side: auth + hamburger */}
         <div className="flex items-center gap-3">
-          {user ? (
+          {/* {user ? (
             <>
               <span className="hidden text-sm text-[#a1a1aa] sm:block">
                 {user.name}
@@ -64,7 +64,7 @@ export function Navbar() {
             <Button size="sm" onClick={() => router.push('/login')}>
               Sign in
             </Button>
-          )}
+          )} */}
 
           {/* Hamburger — mobile only */}
           <button
