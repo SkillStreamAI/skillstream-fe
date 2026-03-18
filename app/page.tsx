@@ -69,9 +69,6 @@ export default function LandingPage() {
             <Link href="/roadmaps">
               <Button size="lg">Browse Roadmaps</Button>
             </Link>
-            <Link href="/player">
-              <Button size="lg" variant="outline">Open Player</Button>
-            </Link>
           </div>
         </div>
 
