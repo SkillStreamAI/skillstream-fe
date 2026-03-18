@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getContent } from '@/lib/lambda';
 import type { ContentRoadmap } from '@/lib/types';
+import ThreeDLayeredCard from '@/components/ui/3d-layered-card';
 
 /* ── 3D perspective grid background ───────────────────────── */
 function GridBackground() {
@@ -51,72 +52,39 @@ function RoadmapCard({ roadmap }: Readonly<{ roadmap: ContentRoadmap }>) {
   const pendingCount = roadmap.episodes.length - readyCount;
 
   return (
-    <div className="card-fade-in gradient-border rounded-2xl group">
-      <div className="flex h-full flex-col rounded-2xl bg-[#161414] p-6 gap-4 transition-colors hover:bg-[#1a1818]">
-
-        {/* Topic + title */}
-        <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#e8a020]/25 bg-[#e8a020]/8 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#e8a020]">
-            <span className="h-1 w-1 rounded-full bg-[#e8a020]" />
-            {roadmap.topic}
-          </span>
-          <h2 className="mt-2 text-base font-bold text-[#f5f0eb] leading-snug">
-            {roadmap.title}
-          </h2>
-          <p className="mt-1.5 text-sm text-[#9e9792] leading-relaxed line-clamp-2">
-            {roadmap.description}
-          </p>
+    <ThreeDLayeredCard
+      logo="/ss-logo.svg"
+      mainImage="/img-path.svg"
+      title={roadmap.title}
+      width="100%"
+      height={{ collapsed: 160, expanded: 340 }}
+      logoSize={52}
+      logoPosition={{ expanded: 12 }}
+      titlePosition={108}
+      backgroundColor="bg-gradient-to-b from-[#3d1a00] via-[#78350f] to-[#1a0a00]"
+      glowColor="rgba(232,160,32,0.18)"
+      glowGradient="#e8a020"
+      shineIntensity={0.25}
+      textColor="white"
+    >
+      <div className="flex flex-col items-center gap-2 w-full px-2">
+        <span className="rounded-full border border-[#e8a020]/40 bg-[#e8a020]/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#e8a020]">
+          {roadmap.topic}
+        </span>
+        <div className="flex items-center gap-2 text-[10px] text-white/50 flex-wrap justify-center">
+          <span>{roadmap.episodes.length} episodes</span>
+          {readyCount > 0 && <span className="text-emerald-400">{readyCount} ready</span>}
+          {pendingCount > 0 && <span className="text-yellow-400">{pendingCount} pending</span>}
         </div>
-
-        {/* Episode stats */}
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="flex items-center gap-1.5 rounded-full border border-[#2c2828] bg-[#1e1c1c] px-3 py-1 text-[#9e9792]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#5a5450]" />
-            {roadmap.episodes.length} episodes
-          </span>
-          {readyCount > 0 && (
-            <span className="flex items-center gap-1.5 rounded-full border border-emerald-800/40 bg-emerald-950/30 px-3 py-1 text-emerald-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              {readyCount} ready
-            </span>
-          )}
-          {pendingCount > 0 && (
-            <span className="flex items-center gap-1.5 rounded-full border border-yellow-800/40 bg-yellow-950/30 px-3 py-1 text-yellow-500">
-              <span className="h-1.5 w-1.5 rounded-full bg-yellow-500" />
-              {pendingCount} pending
-            </span>
-          )}
-        </div>
-
-        {/* Episode preview list */}
-        <div className="flex flex-col gap-1 flex-1">
-          {roadmap.episodes.map((ep) => (
-            <div
-              key={ep.id}
-              className="flex items-start gap-2.5 rounded-xl bg-[#1e1c1c] px-3 py-2 border border-[#2c2828]/50"
-            >
-              <span className="mt-0.5 shrink-0 text-xs">
-                {ep.status === 'READY' || ep.status === 'COMPLETED' ? '🎙️' : '⏳'}
-              </span>
-              <p className="text-xs text-[#9e9792] leading-relaxed line-clamp-1">{ep.title}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* CTA */}
         <Link
-          href="/player"
-          className="mt-auto inline-flex items-center justify-center gap-2 rounded-xl
-            bg-[#e8a020] px-4 py-2.5 text-sm font-semibold text-black
-            transition-colors hover:bg-[#f5b030] active:scale-[0.98]"
+          href={`/player/${roadmap.id}`}
+          onClick={(e) => e.stopPropagation()}
+          className="mt-1 rounded-full bg-[#e8a020] hover:bg-[#f5b030] px-4 py-1 text-xs font-semibold text-black transition-colors"
         >
           Open in Player
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
         </Link>
       </div>
-    </div>
+    </ThreeDLayeredCard>
   );
 }
 
@@ -175,7 +143,7 @@ export default function RoadmapsPage() {
 
         {!loading && !error && roadmaps.length === 0 && (
           <div className="flex flex-col items-center gap-3 py-24 text-center">
-            <div className="text-4xl">📭</div>
+            <div className="text-4xl" aria-hidden="true">📭</div>
             <p className="text-[#9e9792]">No roadmaps yet.</p>
             <p className="text-sm text-[#5a5450]">Check back soon — roadmaps are generated automatically.</p>
           </div>

@@ -1,4 +1,12 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'SkillStream AI — Audio Learning Roadmaps',
+  description:
+    'Turn any tech topic into a structured audio course. AI-generated roadmaps narrated by Amazon Polly — learn Kubernetes, Rust, LLM Engineering, and more on the go.',
+  alternates: { canonical: '/' },
+};
 import { Button } from '@/components/ui/Button';
 import { InfiniteSlider } from '@/components/ui/infinite-slider';
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';

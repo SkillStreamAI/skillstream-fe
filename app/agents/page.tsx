@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import type { ContentRoadmap, ContentEpisode } from '@/lib/types';
 import { getContent } from '@/lib/lambda';
+import ThreeDLayeredCard from '@/components/ui/3d-layered-card';
 
 const AGENTS = [
   {
@@ -244,43 +245,61 @@ export default function AgentsPage() {
       {/* mb-10 spacer replaced by the header above */}
 
       {/* Agent selector */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-10">
         {AGENTS.map((agent) => {
           const isActive = activeAgent === agent.id;
+          const bg = agent.id === 'trends'
+            ? 'bg-gradient-to-b from-[#0c2340] via-[#0e2d50] to-[#070f1a]'
+            : 'bg-gradient-to-b from-[#0a2a20] via-[#0d3528] to-[#060f0a]';
+          const glowColor = agent.id === 'trends'
+            ? 'rgba(34,211,238,0.18)' : 'rgba(52,211,153,0.18)';
+          const glowGradient = agent.id === 'trends' ? '#22d3ee' : '#34d399';
           return (
-            <button
+            <div
               key={agent.id}
+              role="button"
+              tabIndex={agent.live ? 0 : -1}
               onClick={() => agent.live && setActiveAgent(agent.id)}
-              disabled={!agent.live}
-              className={`text-left rounded-2xl transition-all cursor-pointer disabled:cursor-default ${
-                isActive ? 'gradient-border-animated glow-active' : 'gradient-border'
-              } ${!agent.live ? 'opacity-50' : ''}`}
+              onKeyDown={(e) => e.key === 'Enter' && agent.live && setActiveAgent(agent.id)}
+              style={{ cursor: agent.live ? 'pointer' : 'default', opacity: agent.live ? 1 : 0.5 }}
+              className={isActive ? 'glow-active rounded-xl' : ''}
             >
-              <div className={`flex h-full flex-col gap-3 rounded-2xl bg-[#161414] p-5 transition-colors ${agent.live ? 'hover:bg-[#1a1818]' : ''}`}>
-                <div className="flex items-center justify-between">
-                  <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider border ${
+              <ThreeDLayeredCard
+                logo="/ss-logo.svg"
+                mainImage="/img-agent.svg"
+                title={agent.name}
+                width="100%"
+                height={{ collapsed: 150, expanded: 300 }}
+                logoSize={52}
+                logoPosition={{ expanded: 12 }}
+                titlePosition={100}
+                backgroundColor={bg}
+                glowColor={glowColor}
+                glowGradient={glowGradient}
+                shineIntensity={0.25}
+                textColor="white"
+              >
+                <div className="flex flex-col items-center gap-2 w-full px-2">
+                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider border ${
                     agent.live
-                      ? 'border-emerald-800/40 bg-emerald-950/30 text-emerald-400'
-                      : 'border-[#2c2828] bg-[#1e1c1c] text-[#5a5450]'
+                      ? 'border-emerald-800/40 bg-emerald-950/50 text-emerald-400'
+                      : 'border-white/10 bg-white/5 text-white/30'
                   }`}>
-                    {agent.live && <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />}
-                    {agent.live ? 'Live' : 'Coming soon'}
+                    {agent.live ? '● Live' : 'Coming soon'}
                   </span>
-                  {isActive && <span className="text-[10px] font-semibold text-[#e8a020] uppercase tracking-wider">Active</span>}
+                  <p className="text-[11px] text-white/60 text-center leading-relaxed line-clamp-2">
+                    {agent.tagline}
+                  </p>
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    {agent.poweredBy.map((t) => (
+                      <span key={t} className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[9px] text-white/40">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#f5f0eb]">{agent.name}</p>
-                  <p className="mt-0.5 text-xs text-[#9e9792] leading-relaxed">{agent.tagline}</p>
-                </div>
-                <div className="mt-auto flex flex-wrap gap-1.5">
-                  {agent.poweredBy.map((t) => (
-                    <span key={t} className="rounded-full border border-[#2c2828] bg-[#1e1c1c] px-2 py-0.5 text-[10px] text-[#5a5450]">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </button>
+              </ThreeDLayeredCard>
+            </div>
           );
         })}
       </div>

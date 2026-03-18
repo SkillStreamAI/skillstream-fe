@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/Button';
 
 const NAV_LINKS = [
   { href: '/roadmaps', label: 'Roadmaps' },
-  { href: '/player',   label: 'Podcast'  },
   { href: '/agents',   label: 'Agents'   },
 ];
 

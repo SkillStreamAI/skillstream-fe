@@ -123,3 +123,23 @@ body {
 
 /* ── Audio range input ─────────────────────────────────────── */
 input[type="range"] { accent-color: var(--amber); }
+
+/* ── Focus visible — WCAG 2.4.11 ──────────────────────────── */
+/* 3px outline, 3:1 contrast against dark bg, shown for keyboard only */
+:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Reduced motion — WCAG 2.3.3 ──────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}

@@ -1,0 +1,28 @@
+# SkillStream AI
+
+> SkillStream AI is a free learning platform that converts any tech topic into a structured audio course. Enter a subject like "Kubernetes" or "LLM Engineering" and Amazon Bedrock generates a hierarchical syllabus — from foundations to expert level — while Amazon Polly narrates each module as a concise 5–10 minute podcast episode. Autonomous AI agents (built on Amazon Bedrock Strands) continuously discover trending topics and scan the library to keep content fresh.
+
+## Main Pages
+
+- [Home](https://skillstream.ai/): Landing page explaining the platform, features, and how it works.
+- [Learning Roadmaps](https://skillstream.ai/roadmaps): Browse all AI-generated learning roadmaps across technology domains. Each roadmap contains structured episodes ordered from foundational to expert level.
+- [Player](https://skillstream.ai/player): Podcast-style audio player for completed roadmap episodes. Select a course and listen to AI-narrated lessons.
+- [AI Agents](https://skillstream.ai/agents): Dashboard showing the two autonomous agents running in the background — Trend Discovery (finds what the tech world is learning now) and Content Lifecycle (flags stale roadmaps).
+
+## What SkillStream AI Does
+
+SkillStream AI turns passive dead time — commutes, gym sessions, walks — into structured technical learning. It differs from traditional courses by generating content on demand for any topic, not just a curated catalog.
+
+Key capabilities:
+- On-demand roadmap generation for any technology topic via Amazon Bedrock
+- Text-to-speech narration of every episode via Amazon Polly
+- Agentic content discovery using Bedrock Strands Agents and Tavily Search
+- Content lifecycle monitoring to prevent stale material
+
+## Technology Stack
+
+Built on AWS: Amazon Bedrock (Nova Pro), Amazon Polly, AWS Step Functions, DynamoDB, Lambda. Frontend: Next.js, TypeScript, Tailwind CSS, deployed on Vercel.
+
+## Full content
+
+- [Full text version](https://skillstream.ai/llms-full.txt): Complete content for larger context windows.
