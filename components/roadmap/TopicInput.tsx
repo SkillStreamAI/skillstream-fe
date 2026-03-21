@@ -66,8 +66,8 @@ export function TopicInput({ onSubmit, loading, value: externalValue, onChange: 
             type="button"
             disabled={loading}
             onClick={() => setTopic(s)}
-            className="rounded-full border border-[#2a2a2a] bg-[#111] px-3 py-1 text-xs text-[#a1a1aa]
-              hover:border-[#7c3aed] hover:text-white transition-colors cursor-pointer
+            className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1 text-xs text-[var(--text-2)]
+              hover:border-[#7c3aed] hover:text-[var(--text-1)] transition-colors cursor-pointer
               disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {s}

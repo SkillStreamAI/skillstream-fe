@@ -43,16 +43,16 @@ export function TrendingSuggestions({ onSelect, disabled }: TrendingSuggestionsP
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-base">🔥</span>
-          <span className="text-sm font-semibold text-white">Trending Now</span>
-          <span className="text-xs text-[#52525b]">— AI-curated from Google Trends</span>
+          <span className="text-sm font-semibold text-[var(--text-1)]">Trending Now</span>
+          <span className="text-xs text-[var(--text-3)]">— AI-curated from Google Trends</span>
         </div>
         <button
           type="button"
           onClick={fetchTrends}
           disabled={loading || disabled}
           title="Refresh trending topics"
-          className="flex items-center gap-1 rounded-full border border-[#2a2a2a] bg-[#111] px-2 py-1
-            text-xs text-[#a1a1aa] hover:border-[#7c3aed] hover:text-white transition-colors
+          className="flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1
+            text-xs text-[var(--text-2)] hover:border-[#7c3aed] hover:text-[var(--text-1)] transition-colors
             disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
         >
           <RefreshIcon spinning={loading} />
@@ -66,7 +66,7 @@ export function TrendingSuggestions({ onSelect, disabled }: TrendingSuggestionsP
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="h-8 rounded-full bg-[#1a1a1a] animate-pulse"
+              className="h-8 rounded-full bg-[var(--surface-2)] animate-pulse"
               style={{ width: `${100 + i * 20}px` }}
             />
           ))}
@@ -75,12 +75,12 @@ export function TrendingSuggestions({ onSelect, disabled }: TrendingSuggestionsP
 
       {/* Error state */}
       {!loading && error && (
-        <p className="text-xs text-[#71717a]">
+        <p className="text-xs text-[var(--text-3)]">
           Could not load trends.{' '}
           <button
             type="button"
             onClick={fetchTrends}
-            className="underline hover:text-white transition-colors cursor-pointer"
+            className="underline hover:text-[var(--text-1)] transition-colors cursor-pointer"
           >
             Retry
           </button>
@@ -101,8 +101,8 @@ export function TrendingSuggestions({ onSelect, disabled }: TrendingSuggestionsP
                 className="gradient-border rounded-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span
-                  className="flex items-center gap-1.5 rounded-full bg-[#111] px-3 py-1
-                    text-xs text-[#a1a1aa] hover:text-white transition-colors"
+                  className="flex items-center gap-1.5 rounded-full bg-[var(--surface)] px-3 py-1
+                    text-xs text-[var(--text-2)] hover:text-[var(--text-1)] transition-colors"
                 >
                   <span className="text-[#7c3aed]">↗</span>
                   {s.trend_title}
@@ -112,11 +112,11 @@ export function TrendingSuggestions({ onSelect, disabled }: TrendingSuggestionsP
               {/* Tooltip */}
               {hoveredIdx === i && (
                 <div
-                  className="absolute bottom-full left-0 mb-2 z-20 w-64 rounded-xl border border-[#2a2a2a]
-                    bg-[#111] p-3 shadow-xl pointer-events-none"
+                  className="absolute bottom-full left-0 mb-2 z-20 w-64 rounded-xl border border-[var(--border)]
+                    bg-[var(--surface)] p-3 shadow-xl pointer-events-none"
                 >
-                  <p className="text-xs font-semibold text-white mb-1">{s.topic}</p>
-                  <p className="text-xs text-[#a1a1aa] mb-2">{s.reason}</p>
+                  <p className="text-xs font-semibold text-[var(--text-1)] mb-1">{s.topic}</p>
+                  <p className="text-xs text-[var(--text-2)] mb-2">{s.reason}</p>
                   <p className="text-xs text-[#7c3aed]">{s.learning_angle}</p>
                 </div>
               )}

@@ -11,19 +11,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  // Solid amber — the one CTA that demands attention
   primary:
-    'bg-[#e8a020] text-black font-semibold ' +
-    'hover:bg-[#f5b030] active:scale-[0.98] transition-all shadow-lg shadow-[#e8a020]/20',
-  // Keep 'gradient' as alias for primary so old usage doesn't break
+    'bg-[var(--amber)] text-black font-semibold ' +
+    'hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-[var(--amber)]/20',
   gradient:
-    'bg-[#e8a020] text-black font-semibold ' +
-    'hover:bg-[#f5b030] active:scale-[0.98] transition-all shadow-lg shadow-[#e8a020]/20',
+    'bg-[var(--amber)] text-black font-semibold ' +
+    'hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-[var(--amber)]/20',
   outline:
-    'border border-[#2c2828] bg-transparent text-[#f5f0eb] ' +
-    'hover:border-[#e8a020]/50 hover:text-white transition-colors',
+    'border border-[var(--border)] bg-transparent text-[var(--text-1)] ' +
+    'hover:border-[var(--amber)]/50 hover:text-[var(--text-1)] transition-colors',
   ghost:
-    'bg-transparent text-[#9e9792] hover:text-white hover:bg-[#1e1c1c] transition-colors',
+    'bg-transparent text-[var(--text-2)] hover:text-[var(--text-1)] hover:bg-[var(--surface-2)] transition-colors',
 };
 
 const sizeClasses: Record<Size, string> = {

@@ -49,18 +49,18 @@ export default function LandingPage() {
 
         <div className="relative z-10 max-w-4xl">
           {/* Eyebrow */}
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#2c2828] bg-[#161414] px-4 py-1.5 text-xs font-medium text-[#9e9792]">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--text-2)]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#e8a020]" />
             Powered by AWS Bedrock &amp; Amazon Polly
           </div>
 
-          <h1 className="text-5xl font-extrabold leading-[1.1] tracking-tight text-[#f5f0eb] sm:text-6xl lg:text-7xl">
+          <h1 className="text-5xl font-extrabold leading-[1.1] tracking-tight text-[var(--text-1)] sm:text-6xl lg:text-7xl">
             Learn Smarter,
             <br />
             <span className="gradient-text">Stream Faster</span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-xl text-base text-[#9e9792] sm:text-lg">
+          <p className="mx-auto mt-6 max-w-xl text-base text-[var(--text-2)] sm:text-lg">
             SkillStream AI turns any tech topic into a structured audio roadmap.
             Clear, ordered episodes that fit into your day.
           </p>
@@ -73,17 +73,17 @@ export default function LandingPage() {
         </div>
 
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#0d0c0c] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[var(--background)] to-transparent" />
       </section>
 
       {/* ── Trending topics ticker ────────────────────────── */}
-      <section className="border-y border-[#2c2828] bg-[#0d0c0c] py-5">
+      <section className="border-y border-[var(--border)] bg-[var(--background)] py-5">
         <div className="relative">
           <InfiniteSlider gap={12} duration={35} speedOnHover={70}>
             {TOPICS.map((topic) => (
               <span
                 key={topic}
-                className="shrink-0 rounded-full border border-[#2c2828] bg-[#161414] px-4 py-1.5 text-xs font-medium text-[#9e9792]"
+                className="shrink-0 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--text-2)]"
               >
                 {topic}
               </span>
@@ -97,17 +97,17 @@ export default function LandingPage() {
       {/* ── How it works ─────────────────────────────────── */}
       <section className="mx-auto max-w-5xl px-4 py-20 sm:py-28 sm:px-6 lg:px-8">
         <p className="mb-2 text-center text-xs font-semibold uppercase tracking-widest text-[#e8a020]">How it works</p>
-        <h2 className="mb-12 text-center text-2xl font-bold text-[#f5f0eb] sm:text-3xl">
+        <h2 className="mb-12 text-center text-2xl font-bold text-[var(--text-1)] sm:text-3xl">
           From topic to podcast in minutes
         </h2>
-        <div className="grid gap-8 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3">
           {STEPS.map(({ step, title, desc }) => (
-            <div key={step} className="flex flex-col items-center text-center gap-4">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1e1c1c] border border-[#2c2828] text-sm font-bold text-[#e8a020]">
+            <div key={step} className="glass-panel flex flex-col items-center gap-4 p-6 text-center">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#e8a020]/30 bg-[#e8a020]/10 text-sm font-bold text-[#e8a020]">
                 {step}
               </div>
-              <h3 className="text-base font-semibold text-[#f5f0eb]">{title}</h3>
-              <p className="text-sm text-[#9e9792] leading-relaxed">{desc}</p>
+              <h3 className="text-base font-semibold text-[var(--text-1)]">{title}</h3>
+              <p className="text-sm leading-relaxed text-[var(--text-2)]">{desc}</p>
             </div>
           ))}
         </div>
@@ -115,21 +115,21 @@ export default function LandingPage() {
 
       {/* Divider */}
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="h-px bg-[#2c2828]" />
+        <div className="h-px bg-[var(--border)]" />
       </div>
 
       {/* ── Features ─────────────────────────────────────── */}
       <section className="mx-auto max-w-5xl px-4 py-20 sm:py-28 sm:px-6 lg:px-8">
         <p className="mb-2 text-center text-xs font-semibold uppercase tracking-widest text-[#e8a020]">Features</p>
-        <h2 className="mb-12 text-center text-2xl font-bold text-[#f5f0eb] sm:text-3xl">
+        <h2 className="mb-12 text-center text-2xl font-bold text-[var(--text-1)] sm:text-3xl">
           Everything you need to level up
         </h2>
-        <div className="grid gap-px bg-[#2c2828] rounded-2xl overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
-            <div key={f.title} className="bg-[#0d0c0c] p-6 hover:bg-[#161414] transition-colors">
+            <div key={f.title} className="glass-panel p-6">
               <div className="mb-4 text-2xl">{f.icon}</div>
-              <h3 className="mb-2 text-sm font-semibold text-[#f5f0eb]">{f.title}</h3>
-              <p className="text-sm leading-relaxed text-[#9e9792]">{f.desc}</p>
+              <h3 className="mb-2 text-sm font-semibold text-[var(--text-1)]">{f.title}</h3>
+              <p className="text-sm leading-relaxed text-[var(--text-2)]">{f.desc}</p>
             </div>
           ))}
         </div>

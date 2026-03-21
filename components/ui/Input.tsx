@@ -11,15 +11,15 @@ export function Input({ label, error, className = '', id, ...props }: InputProps
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-[#a1a1aa]">
+        <label htmlFor={inputId} className="text-sm font-medium text-[var(--text-2)]">
           {label}
         </label>
       )}
       <input
         id={inputId}
         className={[
-          'w-full rounded-xl border border-[#2a2a2a] bg-[#111] px-4 py-2.5',
-          'text-sm text-[#ededed] placeholder:text-[#52525b]',
+          'w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5',
+          'text-sm text-[var(--text-1)] placeholder:text-[var(--text-3)]',
           'outline-none transition-all',
           'focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/20',
           error

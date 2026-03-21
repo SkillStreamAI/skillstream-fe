@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import type { ContentRoadmap, ContentEpisode } from '@/lib/types';
 import { getContent } from '@/lib/lambda';
-import ThreeDLayeredCard from '@/components/ui/3d-layered-card';
 
 const AGENTS = [
   {
@@ -43,13 +42,13 @@ function formatDate(iso: string): string {
 
 function ChapterSkeletonRow() {
   return (
-    <div className="flex flex-col gap-2 border-b border-[#2c2828] py-4 animate-pulse last:border-b-0">
+    <div className="flex flex-col gap-2 border-b border-[var(--border)] py-4 animate-pulse last:border-b-0">
       <div className="flex items-center gap-3">
-        <div className="h-4 w-48 rounded bg-[#1e1c1c]" />
-        <div className="h-4 w-24 rounded bg-[#1e1c1c]" />
+        <div className="h-4 w-48 rounded bg-[var(--surface-2)]" />
+        <div className="h-4 w-24 rounded bg-[var(--surface-2)]" />
       </div>
-      <div className="h-3 w-full rounded bg-[#1e1c1c]" />
-      <div className="h-3 w-4/5 rounded bg-[#1e1c1c]" />
+      <div className="h-3 w-full rounded bg-[var(--surface-2)]" />
+      <div className="h-3 w-4/5 rounded bg-[var(--surface-2)]" />
     </div>
   );
 }
@@ -84,8 +83,8 @@ function ChaptersList() {
   return (
     <div className="mt-6">
       <div className="mb-4">
-        <p className="text-sm font-semibold text-[#f5f0eb]">Trending Topics</p>
-        <p className="mt-0.5 text-xs text-[#5a5450]">Latest audio episodes generated from trending topics</p>
+        <p className="text-sm font-semibold text-[var(--text-1)]">Trending Topics</p>
+        <p className="mt-0.5 text-xs text-[var(--text-3)]">Latest audio episodes generated from trending topics</p>
       </div>
 
       {loading && (
@@ -103,11 +102,11 @@ function ChaptersList() {
       )}
 
       {!loading && !error && chapters.length === 0 && (
-        <p className="text-xs text-[#5a5450]">No chapters found yet.</p>
+        <p className="text-xs text-[var(--text-3)]">No chapters found yet.</p>
       )}
 
       {!loading && !error && chapters.length > 0 && (
-        <div className="divide-y divide-[#2c2828]">
+        <div className="divide-y divide-[var(--border)]">
           {chapters.map((ch, idx) => (
             <div
               key={ch.id}
@@ -115,14 +114,14 @@ function ChaptersList() {
               style={{ animationDelay: `${idx * 60}ms` }}
             >
               <div className="flex items-center gap-3 flex-wrap">
-                <p className="text-sm font-semibold text-[#f5f0eb] leading-snug">{ch.title}</p>
+                <p className="text-sm font-semibold text-[var(--text-1)] leading-snug">{ch.title}</p>
                 {ch.created_at && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2c2828] bg-[#1e1c1c] px-3 py-1 text-xs text-[#9e9792]">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-2)]">
                     {formatDate(ch.created_at)}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-[#9e9792] leading-relaxed">{ch.overview}</p>
+              <p className="text-xs text-[var(--text-2)] leading-relaxed">{ch.overview}</p>
             </div>
           ))}
         </div>
@@ -133,9 +132,9 @@ function ChaptersList() {
 
 function RoadmapSkeletonRow() {
   return (
-    <div className="flex items-center justify-between border-b border-[#2c2828] py-3 animate-pulse last:border-b-0">
-      <div className="h-4 w-48 rounded bg-[#1e1c1c]" />
-      <div className="h-3 w-24 rounded bg-[#1e1c1c]" />
+    <div className="flex items-center justify-between border-b border-[var(--border)] py-3 animate-pulse last:border-b-0">
+      <div className="h-4 w-48 rounded bg-[var(--surface-2)]" />
+      <div className="h-3 w-24 rounded bg-[var(--surface-2)]" />
     </div>
   );
 }
@@ -165,8 +164,8 @@ function ContentLifecyclePanel() {
   return (
     <div className="mt-6">
       <div className="mb-4">
-        <p className="text-sm font-semibold text-[#f5f0eb]">Roadmap Library</p>
-        <p className="mt-0.5 text-xs text-[#5a5450]">Showing the last time each roadmap received new content</p>
+        <p className="text-sm font-semibold text-[var(--text-1)]">Roadmap Library</p>
+        <p className="mt-0.5 text-xs text-[var(--text-3)]">Showing the last time each roadmap received new content</p>
       </div>
 
       {loading && (
@@ -182,11 +181,11 @@ function ContentLifecyclePanel() {
       )}
 
       {!loading && !error && roadmaps.length === 0 && (
-        <p className="text-xs text-[#5a5450]">No roadmaps found.</p>
+        <p className="text-xs text-[var(--text-3)]">No roadmaps found.</p>
       )}
 
       {!loading && !error && roadmaps.length > 0 && (
-        <div className="divide-y divide-[#2c2828]">
+        <div className="divide-y divide-[var(--border)]">
           {roadmaps.map((rm, idx) => {
             const date = lastUpdated(rm);
             return (
@@ -195,13 +194,13 @@ function ContentLifecyclePanel() {
                 className="card-fade-in flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
                 style={{ animationDelay: `${idx * 50}ms` }}
               >
-                <p className="text-sm text-[#f5f0eb] font-medium leading-snug">{rm.title || rm.topic}</p>
+                <p className="text-sm text-[var(--text-1)] font-medium leading-snug">{rm.title || rm.topic}</p>
                 {date ? (
-                  <span className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#2c2828] bg-[#1e1c1c] px-3 py-1 text-xs text-[#9e9792]">
+                  <span className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-2)]">
                     {date}
                   </span>
                 ) : (
-                  <span className="shrink-0 text-xs text-[#3a3535]">—</span>
+                  <span className="shrink-0 text-xs text-[var(--text-3)]">—</span>
                 )}
               </div>
             );
@@ -217,131 +216,113 @@ export default function AgentsPage() {
 
   return (
     <div>
-      {/* ── 3D grid page header ─── */}
-      <div className="relative overflow-hidden border-b border-[#2c2828] px-4 pt-20 pb-16 sm:px-6 lg:px-8">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(rgba(44,40,40,0.7) 1px,transparent 1px),linear-gradient(90deg,rgba(44,40,40,0.7) 1px,transparent 1px)', backgroundSize:'48px 48px', transform:'perspective(700px) rotateX(60deg) scaleX(1.4) translateY(-15%)', transformOrigin:'50% 0%', opacity:0.55 }} />
-          <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse 70% 35% at 50% 100%,rgba(232,160,32,0.10) 0%,transparent 70%)' }} />
-          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to bottom,#0d0c0c 0%,transparent 35%,transparent 65%,#0d0c0c 100%)' }} />
-        </div>
-        <div className="relative z-10 mx-auto max-w-7xl">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#2c2828] bg-[#161414] px-3 py-1 text-xs font-medium text-[#9e9792]">
+      {/* ── Hero header ── */}
+      <div className="hero-gradient border-b border-[var(--border)] px-4 pt-20 pb-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1 text-xs font-medium text-[var(--text-2)]">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#e8a020] opacity-50" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-[#e8a020]" />
             </span>
             Agentic AI
           </div>
-          <h1 className="text-3xl font-bold text-[#f5f0eb] sm:text-4xl">
+          <h1 className="text-3xl font-bold text-[var(--text-1)] sm:text-4xl">
             AI Agents
           </h1>
-          <p className="mt-3 max-w-xl text-sm text-[#9e9792] sm:text-base">
+          <p className="mt-3 text-sm text-[var(--text-2)] sm:text-base">
             Autonomous agents that run in the background — spotting trends, scanning your content, and making sure every roadmap stays relevant.
           </p>
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      {/* mb-10 spacer replaced by the header above */}
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
 
       {/* Agent selector */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+      <div className="grid gap-4 sm:grid-cols-2 mb-10">
         {AGENTS.map((agent) => {
           const isActive = activeAgent === agent.id;
-          const bg = agent.id === 'trends'
-            ? 'bg-gradient-to-b from-[#0c2340] via-[#0e2d50] to-[#070f1a]'
-            : 'bg-gradient-to-b from-[#0a2a20] via-[#0d3528] to-[#060f0a]';
-          const glowColor = agent.id === 'trends'
-            ? 'rgba(34,211,238,0.18)' : 'rgba(52,211,153,0.18)';
-          const glowGradient = agent.id === 'trends' ? '#22d3ee' : '#34d399';
+          const accentColor = agent.id === 'trends' ? '#22d3ee' : '#34d399';
           return (
-            <div
+            <button
               key={agent.id}
-              role="button"
-              tabIndex={agent.live ? 0 : -1}
+              type="button"
+              disabled={!agent.live}
               onClick={() => agent.live && setActiveAgent(agent.id)}
-              onKeyDown={(e) => e.key === 'Enter' && agent.live && setActiveAgent(agent.id)}
-              style={{ cursor: agent.live ? 'pointer' : 'default', opacity: agent.live ? 1 : 0.5 }}
-              className={isActive ? 'glow-active rounded-xl' : ''}
+              style={{
+                opacity: agent.live ? 1 : 0.5,
+                borderColor: isActive ? accentColor + '60' : undefined,
+                boxShadow: isActive ? `0 0 0 1px ${accentColor}30, inset 0 1px 0 rgba(255,255,255,0.08)` : undefined,
+              }}
+              className={`glass-panel w-full p-5 text-left transition-all ${
+                agent.live ? 'cursor-pointer' : 'cursor-default'
+              } ${isActive ? 'glow-active' : ''}`}
             >
-              <ThreeDLayeredCard
-                logo="/ss-logo.svg"
-                mainImage="/img-agent.svg"
-                title={agent.name}
-                width="100%"
-                height={{ collapsed: 150, expanded: 300 }}
-                logoSize={52}
-                logoPosition={{ expanded: 12 }}
-                titlePosition={100}
-                backgroundColor={bg}
-                glowColor={glowColor}
-                glowGradient={glowGradient}
-                shineIntensity={0.25}
-                textColor="white"
-              >
-                <div className="flex flex-col items-center gap-2 w-full px-2">
-                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider border ${
-                    agent.live
-                      ? 'border-emerald-800/40 bg-emerald-950/50 text-emerald-400'
-                      : 'border-white/10 bg-white/5 text-white/30'
-                  }`}>
-                    {agent.live ? '● Live' : 'Coming soon'}
-                  </span>
-                  <p className="text-[11px] text-white/60 text-center leading-relaxed line-clamp-2">
-                    {agent.tagline}
-                  </p>
-                  <div className="flex flex-wrap gap-1 justify-center">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                    <span className="text-sm font-semibold text-[var(--text-1)]">{agent.name}</span>
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                      agent.live
+                        ? 'bg-emerald-500 text-white'
+                        : 'border border-white/10 bg-white/5 text-[var(--text-3)]'
+                    }`}>
+                      {agent.live ? '● Live' : 'Coming soon'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[var(--text-2)] leading-relaxed">{agent.tagline}</p>
+                  <div className="mt-2.5 flex flex-wrap gap-1">
                     {agent.poweredBy.map((t) => (
-                      <span key={t} className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[9px] text-white/40">
+                      <span key={t} className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-[var(--text-2)]">
                         {t}
                       </span>
                     ))}
                   </div>
                 </div>
-              </ThreeDLayeredCard>
-            </div>
+                {isActive && (
+                  <div
+                    className="mt-0.5 h-2 w-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: accentColor }}
+                    aria-hidden="true"
+                  />
+                )}
+              </div>
+            </button>
           );
         })}
       </div>
 
       {/* Active agent output */}
       {activeAgent === 'content' && (
-        <div className="gradient-border rounded-2xl">
-          <div className="rounded-2xl bg-[#161414] p-5 sm:p-8">
+        <div className="glass-panel p-5 sm:p-8">
             <div className="flex items-start gap-3 flex-wrap">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-bold text-[#f5f0eb]">Content Lifecycle Agent</h2>
-                  <span className="flex items-center gap-1 rounded-full border border-emerald-800/40 bg-emerald-950/30 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Running
+                  <h2 className="text-base font-bold text-[var(--text-1)]">Content Lifecycle Agent</h2>
+                  <span className="flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-semibold text-white">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />{' '}Running
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-[#9e9792] max-w-lg">{AGENTS[1].description}</p>
+                <p className="mt-1 text-sm text-[var(--text-2)] max-w-lg">{AGENTS[1].description}</p>
               </div>
             </div>
             <ContentLifecyclePanel />
-          </div>
         </div>
       )}
 
       {activeAgent === 'trends' && (
-        <div className="gradient-border rounded-2xl">
-          <div className="rounded-2xl bg-[#161414] p-5 sm:p-8">
+        <div className="glass-panel p-5 sm:p-8">
             <div className="flex items-start gap-3 flex-wrap">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-bold text-[#f5f0eb]">Trend Discovery Agent</h2>
-                  <span className="flex items-center gap-1 rounded-full border border-emerald-800/40 bg-emerald-950/30 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Running
+                  <h2 className="text-base font-bold text-[var(--text-1)]">Trend Discovery Agent</h2>
+                  <span className="flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-semibold text-white">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />{' '}Running
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-[#9e9792] max-w-lg">{AGENTS[0].description}</p>
+                <p className="mt-1 text-sm text-[var(--text-2)] max-w-lg">{AGENTS[0].description}</p>
               </div>
             </div>
             <ChaptersList />
-          </div>
         </div>
       )}
       </div>{/* /inner content wrapper */}

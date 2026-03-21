@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
+import { ThemeProvider } from '@/lib/theme-context';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { MiniPlayer } from '@/components/player/MiniPlayer';
@@ -94,6 +95,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* FOUC prevention — reads localStorage before React hydrates so the
+            correct data-theme is set on <html> before any paint */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('skillstream_theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()` }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
@@ -124,6 +128,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
+        <ThemeProvider>
         <AuthProvider>
           {gaId && <GoogleAnalytics measurementId={gaId} />}
           <Navbar />
@@ -132,6 +137,7 @@ export default function RootLayout({
           <Footer />
           <MiniPlayer />
         </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

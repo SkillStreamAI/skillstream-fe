@@ -148,7 +148,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
   return (
     <div className="relative w-full">
       {/* ── Main card ─────────────────────────────────────── */}
-      <div className="overflow-hidden rounded-2xl border border-[#2c2828] bg-[#161414] shadow-2xl shadow-black/60">
+      <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-2xl shadow-black/60">
 
         {/* Hero / artwork area */}
         <div
@@ -159,7 +159,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
           }}
         >
           {/* Fade to card bg at bottom */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#161414] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface)] via-transparent to-transparent" />
 
           {/* Equalizer centered in hero */}
           <div className="absolute inset-0 flex items-center justify-center">
@@ -168,7 +168,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
 
           {/* Episode badge */}
           {epNum > 0 && (
-            <div className="absolute left-3 top-3 rounded-full border border-[#e8a020]/30 bg-black/40 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#e8a020] backdrop-blur-sm">
+            <div className="absolute left-3 top-3 rounded-full border border-[#e8a020]/30 bg-black/40 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--amber)] backdrop-blur-sm">
               Ep {epNum} / {episodes.length}
             </div>
           )}
@@ -188,10 +188,10 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
 
           {/* Track info */}
           <div className="mb-5">
-            <h2 className="truncate text-base font-bold text-[#f5f0eb]">
+            <h2 className="truncate text-base font-bold text-[var(--text-1)]">
               {currentTrack?.title ?? 'Select an episode to begin'}
             </h2>
-            <p className="mt-0.5 truncate text-xs text-[#5a5450]">
+            <p className="mt-0.5 truncate text-xs text-[var(--text-3)]">
               {courseTopic} · {courseTitle}
             </p>
           </div>
@@ -200,14 +200,14 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
           <div className="mb-5">
             <div
               ref={progressRef}
-              className="group relative h-1.5 cursor-pointer overflow-visible rounded-full bg-[#2c2828]"
+              className="group relative h-1.5 cursor-pointer overflow-visible rounded-full bg-[var(--border)]"
               onClick={handleProgressClick}
               onMouseMove={handleProgressHover}
               onMouseLeave={() => setHoverTime(null)}
             >
               {/* Fill */}
               <div
-                className="absolute left-0 top-0 h-full rounded-full bg-[#e8a020]"
+                className="absolute left-0 top-0 h-full rounded-full bg-[var(--amber)]"
                 style={{ width: `${progress * 100}%`, transition: 'width 0.1s linear' }}
               />
               {/* Thumb */}
@@ -225,7 +225,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
                 </div>
               )}
             </div>
-            <div className="mt-1.5 flex justify-between text-[10px] text-[#5a5450]">
+            <div className="mt-1.5 flex justify-between text-[10px] text-[var(--text-3)]">
               <span>{fmt(positionSeconds)}</span>
               <span>{fmt(duration)}</span>
             </div>
@@ -240,7 +240,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
                 onClick={toggleShuffle}
                 aria-label="Shuffle"
                 className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors ${
-                  isShuffled ? 'text-[#e8a020]' : 'text-[#5a5450] hover:text-[#9e9792]'
+                  isShuffled ? 'text-[var(--amber)]' : 'text-[var(--text-3)] hover:text-[var(--text-2)]'
                 }`}
               >
                 <Shuffle size={13} />
@@ -249,12 +249,12 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
                 onClick={toggleRepeat}
                 aria-label="Repeat"
                 className={`relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors ${
-                  repeatMode !== 'off' ? 'text-[#e8a020]' : 'text-[#5a5450] hover:text-[#9e9792]'
+                  repeatMode !== 'off' ? 'text-[var(--amber)]' : 'text-[var(--text-3)] hover:text-[var(--text-2)]'
                 }`}
               >
                 <Repeat size={13} />
                 {repeatMode === 'one' && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#e8a020] text-[8px] font-bold text-black">
+                  <span className="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-[var(--amber)] text-[8px] font-bold text-black">
                     1
                   </span>
                 )}
@@ -265,7 +265,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
             <div className="flex items-center gap-3">
               <button
                 onClick={prev} disabled={!hasPrev} aria-label="Previous"
-                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[#9e9792] transition-colors hover:text-[#f5f0eb] disabled:opacity-25"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[var(--text-2)] transition-colors hover:text-[var(--text-1)] disabled:opacity-25"
               >
                 <SkipBack size={17} />
               </button>
@@ -273,7 +273,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
               <button
                 onClick={isPlaying ? pause : resume}
                 aria-label={isPlaying ? 'Pause' : 'Play'}
-                className="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[#e8a020] text-black shadow-lg shadow-[#e8a020]/25 transition-all hover:scale-105 hover:bg-[#f5b030] active:scale-95"
+                className="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[var(--amber)] text-black shadow-lg shadow-[var(--amber)]/25 transition-all hover:scale-105 hover:bg-[#f5b030] active:scale-95"
               >
                 {isPlaying
                   ? <Pause size={20} className="fill-black" />
@@ -283,7 +283,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
 
               <button
                 onClick={next} disabled={!hasNext} aria-label="Next"
-                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[#9e9792] transition-colors hover:text-[#f5f0eb] disabled:opacity-25"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[var(--text-2)] transition-colors hover:text-[var(--text-1)] disabled:opacity-25"
               >
                 <SkipForward size={17} />
               </button>
@@ -294,7 +294,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
               <button
                 onClick={() => setShowVolume(!showVolume)}
                 aria-label="Volume"
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[#5a5450] transition-colors hover:text-[#9e9792]"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[var(--text-3)] transition-colors hover:text-[var(--text-2)]"
               >
                 {isMuted || volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
               </button>
@@ -303,7 +303,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
                 onClick={() => setShowQueue(!showQueue)}
                 aria-label="Queue"
                 className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors ${
-                  showQueue ? 'text-[#e8a020]' : 'text-[#5a5450] hover:text-[#9e9792]'
+                  showQueue ? 'text-[var(--amber)]' : 'text-[var(--text-3)] hover:text-[var(--text-2)]'
                 }`}
               >
                 <List size={13} />
@@ -311,9 +311,9 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
 
               {/* Volume popup */}
               {showVolume && (
-                <div className="absolute bottom-full right-0 z-20 mb-2 rounded-xl border border-[#2c2828] bg-[#111010] p-3 shadow-xl">
+                <div className="absolute bottom-full right-0 z-20 mb-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-xl">
                   <div className="flex items-center gap-2">
-                    <button onClick={toggleMute} className="cursor-pointer text-[#5a5450] transition-colors hover:text-[#9e9792]">
+                    <button onClick={toggleMute} className="cursor-pointer text-[var(--text-3)] transition-colors hover:text-[var(--text-2)]">
                       {isMuted || volume === 0 ? <VolumeX size={12} /> : <Volume2 size={12} />}
                     </button>
                     <input
@@ -322,7 +322,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
                       className="w-24 cursor-pointer"
                       aria-label="Volume"
                     />
-                    <span className="w-7 text-right text-[10px] text-[#5a5450]">{isMuted ? 0 : volume}%</span>
+                    <span className="w-7 text-right text-[10px] text-[var(--text-3)]">{isMuted ? 0 : volume}%</span>
                   </div>
                 </div>
               )}
@@ -333,12 +333,12 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
 
       {/* ── Inline queue panel ────────────────────────── */}
       {showQueue && (
-        <div className="mt-3 overflow-hidden rounded-2xl border border-[#2c2828] bg-[#161414] shadow-xl">
+        <div className="mt-3 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-xl">
           <div className="flex items-center justify-between px-4 pb-2 pt-4">
-            <h3 className="text-sm font-semibold text-[#f5f0eb]">
-              Queue <span className="text-[#5a5450]">({episodes.length})</span>
+            <h3 className="text-sm font-semibold text-[var(--text-1)]">
+              Queue <span className="text-[var(--text-3)]">({episodes.length})</span>
             </h3>
-            <button onClick={() => setShowQueue(false)} className="cursor-pointer text-[#5a5450] transition-colors hover:text-[#9e9792]">
+            <button onClick={() => setShowQueue(false)} className="cursor-pointer text-[var(--text-3)] transition-colors hover:text-[var(--text-2)]">
               <X size={14} />
             </button>
           </div>
@@ -349,16 +349,16 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
                 <button
                   key={ep.id}
                   onClick={() => playTrack(ep.id)}
-                  className={`flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-[#1e1c1c] ${
-                    active ? 'bg-[#e8a020]/8' : ''
+                  className={`flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-[var(--surface-2)] ${
+                    active ? 'bg-[var(--amber)]/8' : ''
                   }`}
                 >
                   <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold ${
-                    active ? 'bg-[#e8a020] text-black' : 'bg-[#2c2828] text-[#5a5450]'
+                    active ? 'bg-[var(--amber)] text-black' : 'bg-[var(--border)] text-[var(--text-3)]'
                   }`}>
                     {active ? '♪' : i + 1}
                   </span>
-                  <p className={`flex-1 truncate text-xs ${active ? 'font-medium text-[#f5f0eb]' : 'text-[#9e9792]'}`}>
+                  <p className={`flex-1 truncate text-xs ${active ? 'font-medium text-[var(--text-1)]' : 'text-[var(--text-2)]'}`}>
                     {ep.title}
                   </p>
                 </button>
