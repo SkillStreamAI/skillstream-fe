@@ -4,6 +4,8 @@ import Script from 'next/script';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
 import { ThemeProvider } from '@/lib/theme-context';
+import { AccessibilityProvider, A11Y_FOUC_SCRIPT } from '@/lib/accessibility-context';
+import { AccessibilityMenu } from '@/components/accessibility/AccessibilityMenu';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { MiniPlayer } from '@/components/player/MiniPlayer';
@@ -98,6 +100,7 @@ export default function RootLayout({
         {/* FOUC prevention — reads localStorage before React hydrates so the
             correct data-theme is set on <html> before any paint */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('skillstream_theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()` }} />
+        <script dangerouslySetInnerHTML={{ __html: A11Y_FOUC_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
@@ -129,6 +132,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ThemeProvider>
+        <AccessibilityProvider>
         <AuthProvider>
           {gaId && <GoogleAnalytics measurementId={gaId} />}
           <Navbar />
@@ -136,7 +140,9 @@ export default function RootLayout({
           <main id="main-content" className="pt-16 pb-20">{children}</main>
           <Footer />
           <MiniPlayer />
+          <AccessibilityMenu />
         </AuthProvider>
+        </AccessibilityProvider>
         </ThemeProvider>
       </body>
     </html>

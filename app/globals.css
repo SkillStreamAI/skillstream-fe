@@ -278,3 +278,37 @@ input[type="range"] { accent-color: var(--amber); }
     transform: none !important;
   }
 }
+
+/* ── Accessibility overrides (user-controlled via AccessibilityMenu) ── */
+html.a11y-large-text  { font-size: 112%; }
+html.a11y-larger-text { font-size: 125%; }
+
+html.a11y-reduce-motion *,
+html.a11y-reduce-motion *::before,
+html.a11y-reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+html.a11y-high-contrast {
+  --text-1:    #ffffff;
+  --text-2:    #e0e0e0;
+  --text-3:    #b0b0b0;
+  --background:#000000;
+  --surface:   #111111;
+  --surface-2: #1a1a1a;
+  --border:    #555555;
+  --amber:     #ffcc00;
+}
+html[data-theme="light"].a11y-high-contrast {
+  --text-1:    #000000;
+  --text-2:    #1a1a1a;
+  --text-3:    #333333;
+  --background:#ffffff;
+  --surface:   #f0f0f0;
+  --surface-2: #e0e0e0;
+  --border:    #666666;
+  --amber:     #7a4800;
+}
