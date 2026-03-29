@@ -261,6 +261,23 @@ input[type="range"] { accent-color: var(--amber); }
   border-radius: 4px;
 }
 
+/* ── RTL layout support ────────────────────────────────────── */
+
+/* Reverse desktop nav links order for RTL */
+[dir="rtl"] .navbar-links {
+  flex-direction: row-reverse;
+}
+
+/* Audio seek bar always scrubs left→right regardless of locale */
+[dir="rtl"] .mini-player-progress {
+  direction: ltr;
+}
+
+/* Text alignment follows reading direction */
+[dir="rtl"] .glass-panel .glass-row {
+  text-align: start;
+}
+
 /* ── Reduced motion — WCAG 2.3.3 ──────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,

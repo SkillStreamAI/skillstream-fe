@@ -4,6 +4,7 @@ import {
   Play, Pause, SkipForward, SkipBack,
   Repeat, Shuffle, Volume2, VolumeX, List, X, Maximize2, Minimize2,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { usePlayerStore } from '@/lib/player-store';
 import type { Episode } from '@/lib/types';
 
@@ -89,6 +90,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
     playTrack,
   } = usePlayerStore();
 
+  const t = useTranslations('player');
   const progressRef = useRef<HTMLDivElement>(null);
   const [hoverTime, setHoverTime] = useState<number | null>(null);
   const [showQueue, setShowQueue] = useState(false);
@@ -169,7 +171,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
           {/* Episode badge */}
           {epNum > 0 && (
             <div className="absolute left-3 top-3 rounded-full border border-[#e8a020]/30 bg-black/40 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--amber)] backdrop-blur-sm">
-              Ep {epNum} / {episodes.length}
+              {t('currentEpisodeBadge', { n: epNum, total: episodes.length })}
             </div>
           )}
 
@@ -177,7 +179,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="absolute right-3 top-3 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white/60 backdrop-blur-sm transition-colors hover:bg-black/60 hover:text-white"
-            aria-label={isExpanded ? 'Minimize' : 'Expand'}
+            aria-label={isExpanded ? t('minimize') : t('expand')}
           >
             {isExpanded ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
           </button>
@@ -189,7 +191,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
           {/* Track info */}
           <div className="mb-5">
             <h2 className="truncate text-base font-bold text-[var(--text-1)]">
-              {currentTrack?.title ?? 'Select an episode to begin'}
+              {currentTrack?.title ?? t('emptyStateHint')}
             </h2>
             <p className="mt-0.5 truncate text-xs text-[var(--text-3)]">
               {courseTopic} · {courseTitle}
@@ -238,7 +240,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
             <div className="flex items-center gap-0.5">
               <button
                 onClick={toggleShuffle}
-                aria-label="Shuffle"
+                aria-label={t('shuffle')}
                 className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors ${
                   isShuffled ? 'text-[var(--amber)]' : 'text-[var(--text-3)] hover:text-[var(--text-2)]'
                 }`}
@@ -247,7 +249,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
               </button>
               <button
                 onClick={toggleRepeat}
-                aria-label="Repeat"
+                aria-label={t('repeat')}
                 className={`relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors ${
                   repeatMode !== 'off' ? 'text-[var(--amber)]' : 'text-[var(--text-3)] hover:text-[var(--text-2)]'
                 }`}
@@ -264,7 +266,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
             {/* Center: prev · play/pause · next */}
             <div className="flex items-center gap-3">
               <button
-                onClick={prev} disabled={!hasPrev} aria-label="Previous"
+                onClick={prev} disabled={!hasPrev} aria-label={t('previous')}
                 className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[var(--text-2)] transition-colors hover:text-[var(--text-1)] disabled:opacity-25"
               >
                 <SkipBack size={17} />
@@ -272,7 +274,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
 
               <button
                 onClick={isPlaying ? pause : resume}
-                aria-label={isPlaying ? 'Pause' : 'Play'}
+                aria-label={isPlaying ? t('pause') : t('play')}
                 className="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[var(--amber)] text-black shadow-lg shadow-[var(--amber)]/25 transition-all hover:scale-105 hover:bg-[#f5b030] active:scale-95"
               >
                 {isPlaying
@@ -282,7 +284,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
               </button>
 
               <button
-                onClick={next} disabled={!hasNext} aria-label="Next"
+                onClick={next} disabled={!hasNext} aria-label={t('next')}
                 className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[var(--text-2)] transition-colors hover:text-[var(--text-1)] disabled:opacity-25"
               >
                 <SkipForward size={17} />
@@ -293,7 +295,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
             <div className="relative flex items-center gap-0.5" data-volume-panel>
               <button
                 onClick={() => setShowVolume(!showVolume)}
-                aria-label="Volume"
+                aria-label={t('volume')}
                 className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[var(--text-3)] transition-colors hover:text-[var(--text-2)]"
               >
                 {isMuted || volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
@@ -301,7 +303,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
 
               <button
                 onClick={() => setShowQueue(!showQueue)}
-                aria-label="Queue"
+                aria-label={t('queueLabel')}
                 className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors ${
                   showQueue ? 'text-[var(--amber)]' : 'text-[var(--text-3)] hover:text-[var(--text-2)]'
                 }`}
@@ -320,7 +322,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
                       type="range" min={0} max={100} value={isMuted ? 0 : volume}
                       onChange={(e) => setVolume(Number(e.target.value))}
                       className="w-24 cursor-pointer"
-                      aria-label="Volume"
+                      aria-label={t('volume')}
                     />
                     <span className="w-7 text-right text-[10px] text-[var(--text-3)]">{isMuted ? 0 : volume}%</span>
                   </div>
@@ -336,7 +338,7 @@ export function CoursePlayer({ courseTopic, courseTitle, episodes }: Props) {
         <div className="mt-3 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-xl">
           <div className="flex items-center justify-between px-4 pb-2 pt-4">
             <h3 className="text-sm font-semibold text-[var(--text-1)]">
-              Queue <span className="text-[var(--text-3)]">({episodes.length})</span>
+              {t('queueLabel')} <span className="text-[var(--text-3)]">({episodes.length})</span>
             </h3>
             <button onClick={() => setShowQueue(false)} className="cursor-pointer text-[var(--text-3)] transition-colors hover:text-[var(--text-2)]">
               <X size={14} />

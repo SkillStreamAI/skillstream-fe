@@ -8,6 +8,9 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { MiniPlayer } from '@/components/player/MiniPlayer';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages, getTranslations } from 'next-intl/server';
+import { RTL_LOCALES } from '@/i18n/routing';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -47,7 +50,6 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    // twitter inherits og:title, og:description, og:image when twitter:* tags are absent
   },
   alternates: {
     canonical: BASE_URL,
@@ -87,13 +89,17 @@ const JSON_LD = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const locale = await getLocale();
+  const messages = await getMessages();
+  const t = await getTranslations('nav');
+  const dir = RTL_LOCALES.has(locale as 'he') ? 'rtl' : 'ltr';
 
   return (
-    <html lang="en">
+    <html lang={locale} dir={dir}>
       <head>
         {/* FOUC prevention — reads localStorage before React hydrates so the
             correct data-theme is set on <html> before any paint */}
@@ -126,18 +132,20 @@ export default function RootLayout({
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:rounded-lg focus:bg-[#e8a020] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
         >
-          Skip to main content
+          {t('skipToMain')}
         </a>
-        <ThemeProvider>
-        <AuthProvider>
-          {gaId && <GoogleAnalytics measurementId={gaId} />}
-          <Navbar />
-          {/* pt-16 offsets the fixed 64px navbar; pb-20 reserves space for MiniPlayer when active */}
-          <main id="main-content" className="pt-16 pb-20">{children}</main>
-          <Footer />
-          <MiniPlayer />
-        </AuthProvider>
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider>
+            <AuthProvider>
+              {gaId && <GoogleAnalytics measurementId={gaId} />}
+              <Navbar />
+              {/* pt-16 offsets the fixed 64px navbar; pb-20 reserves space for MiniPlayer when active */}
+              <main id="main-content" className="pt-16 pb-20">{children}</main>
+              <Footer />
+              <MiniPlayer />
+            </AuthProvider>
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

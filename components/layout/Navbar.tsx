@@ -4,11 +4,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme, type Theme } from '@/lib/theme-context';
-
-const NAV_LINKS = [
-  { href: '/roadmaps', label: 'Roadmaps' },
-  { href: '/agents',   label: 'Agents'   },
-];
+import { useTranslations, useLocale } from 'next-intl';
+import { locales, type Locale } from '@/i18n/routing';
 
 /* ── Theme toggle icons ─────────────────────────────────────── */
 function SunIcon() {
@@ -40,24 +37,27 @@ function SystemIcon() {
   );
 }
 
-const THEME_OPTIONS: { value: Theme; label: string; Icon: () => React.JSX.Element }[] = [
-  { value: 'light',  label: 'Light',  Icon: SunIcon   },
-  { value: 'system', label: 'System', Icon: SystemIcon },
-  { value: 'dark',   label: 'Dark',   Icon: MoonIcon  },
+const THEME_OPTIONS: { value: Theme; labelKey: 'light' | 'system' | 'dark'; Icon: () => React.JSX.Element }[] = [
+  { value: 'light',  labelKey: 'light',  Icon: SunIcon   },
+  { value: 'system', labelKey: 'system', Icon: SystemIcon },
+  { value: 'dark',   labelKey: 'dark',   Icon: MoonIcon  },
 ];
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const t = useTranslations('theme');
+  const tNav = useTranslations('nav');
 
   return (
     <div
       className="flex items-center rounded-full border p-0.5"
       style={{ borderColor: 'var(--border)', background: 'var(--surface-2)' }}
       role="group"
-      aria-label="Choose theme"
+      aria-label={tNav('chooseTheme')}
     >
-      {THEME_OPTIONS.map(({ value, label, Icon }) => {
+      {THEME_OPTIONS.map(({ value, labelKey, Icon }) => {
         const isActive = theme === value;
+        const label = t(labelKey);
         return (
           <button
             key={value}
@@ -79,11 +79,61 @@ function ThemeToggle() {
   );
 }
 
+const LOCALE_OPTIONS: { value: Locale; label: string }[] = [
+  { value: 'en', label: 'EN' },
+  { value: 'he', label: 'HE' },
+];
+
+function LanguageSwitcher() {
+  const locale = useLocale();
+  const t = useTranslations('nav');
+  const router = useRouter();
+
+  const switchLocale = (next: Locale) => {
+    document.cookie = `NEXT_LOCALE=${next};path=/;max-age=31536000;SameSite=Lax`;
+    router.refresh();
+  };
+
+  return (
+    <div
+      className="flex items-center rounded-full border p-0.5"
+      style={{ borderColor: 'var(--border)', background: 'var(--surface-2)' }}
+      role="group"
+      aria-label={t('chooseLanguage')}
+    >
+      {LOCALE_OPTIONS.map(({ value, label }) => {
+        const isActive = locale === value;
+        return (
+          <button
+            key={value}
+            type="button"
+            onClick={() => switchLocale(value)}
+            aria-pressed={isActive}
+            className="flex h-7 w-9 items-center justify-center rounded-full text-xs font-semibold transition-all duration-200"
+            style={{
+              background: isActive ? 'var(--amber)' : 'transparent',
+              color:      isActive ? '#000'         : 'var(--text-2)',
+            }}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function Navbar() {
   const pathname = usePathname();
   const router   = useRouter();
   const { logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const t = useTranslations('nav');
+
+  const NAV_LINKS = [
+    { href: '/roadmaps', label: t('roadmaps') },
+    { href: '/agents',   label: t('agents')   },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -97,12 +147,12 @@ export function Navbar() {
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2 select-none" onClick={() => setMenuOpen(false)}>
           <span className="gradient-text text-xl font-bold tracking-tight">
-            SkillStream AI
+            {t('brand')}
           </span>
         </Link>
 
         {/* Desktop nav links */}
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="navbar-links hidden items-center gap-6 md:flex">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
               key={href}
@@ -115,16 +165,18 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* Right side: theme toggle + hamburger */}
+        {/* Right side: language switcher + theme toggle + hamburger */}
         <div className="flex items-center gap-3">
           {/* Theme toggle — always visible */}
           <ThemeToggle />
+          {/* Language switcher — always visible */}
+          <LanguageSwitcher />
 
           {/* Hamburger — mobile only */}
           <button
             onClick={() => setMenuOpen((o) => !o)}
             className="flex md:hidden flex-col justify-center items-center w-8 h-8 gap-1.5 rounded focus:outline-none"
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={menuOpen ? t('closeMenu') : t('openMenu')}
           >
             <span
               className={`block h-0.5 w-5 transition-all duration-200 ${menuOpen ? 'translate-y-2 rotate-45' : ''}`}

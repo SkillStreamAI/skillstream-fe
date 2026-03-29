@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import type { TrendSuggestion } from '@/lib/types';
 
 interface TrendingSuggestionsProps {
@@ -12,6 +13,7 @@ export function TrendingSuggestions({ onSelect, disabled }: TrendingSuggestionsP
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const t = useTranslations('trends');
 
   const fetchTrends = useCallback(async () => {
     setLoading(true);
@@ -43,20 +45,20 @@ export function TrendingSuggestions({ onSelect, disabled }: TrendingSuggestionsP
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-base">🔥</span>
-          <span className="text-sm font-semibold text-[var(--text-1)]">Trending Now</span>
-          <span className="text-xs text-[var(--text-3)]">— AI-curated from Google Trends</span>
+          <span className="text-sm font-semibold text-[var(--text-1)]">{t('sectionTitle')}</span>
+          <span className="text-xs text-[var(--text-3)]">{t('sectionSubtitle')}</span>
         </div>
         <button
           type="button"
           onClick={fetchTrends}
           disabled={loading || disabled}
-          title="Refresh trending topics"
+          title={t('refresh')}
           className="flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1
             text-xs text-[var(--text-2)] hover:border-[#7c3aed] hover:text-[var(--text-1)] transition-colors
             disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
         >
           <RefreshIcon spinning={loading} />
-          Refresh
+          {t('refresh')}
         </button>
       </div>
 
@@ -76,13 +78,13 @@ export function TrendingSuggestions({ onSelect, disabled }: TrendingSuggestionsP
       {/* Error state */}
       {!loading && error && (
         <p className="text-xs text-[var(--text-3)]">
-          Could not load trends.{' '}
+          {t('errorMessage')}{' '}
           <button
             type="button"
             onClick={fetchTrends}
             className="underline hover:text-[var(--text-1)] transition-colors cursor-pointer"
           >
-            Retry
+            {t('retry')}
           </button>
         </p>
       )}

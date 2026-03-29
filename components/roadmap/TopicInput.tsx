@@ -1,5 +1,6 @@
 'use client';
 import { useState, type FormEvent } from 'react';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
@@ -23,6 +24,8 @@ interface TopicInputProps {
 export function TopicInput({ onSubmit, loading, value: externalValue, onChange: externalOnChange }: Readonly<TopicInputProps>) {
   const [internalTopic, setInternalTopic] = useState('');
   const topic = externalValue ?? internalTopic;
+  const t = useTranslations('topicInput');
+
   const setTopic = (v: string) => {
     setInternalTopic(v);
     externalOnChange?.(v);
@@ -41,8 +44,8 @@ export function TopicInput({ onSubmit, loading, value: externalValue, onChange: 
       >
         <div className="flex-1">
           <Input
-            label="What do you want to learn?"
-            placeholder="e.g. Machine Learning, AWS Lambda, React Performance…"
+            label={t('label')}
+            placeholder={t('placeholder')}
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             disabled={loading}
@@ -54,7 +57,7 @@ export function TopicInput({ onSubmit, loading, value: externalValue, onChange: 
           loading={loading}
           disabled={!topic.trim()}
         >
-          Generate Roadmap
+          {t('generateButton')}
         </Button>
       </form>
 

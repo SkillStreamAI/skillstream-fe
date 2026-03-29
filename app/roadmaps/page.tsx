@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { getContent } from '@/lib/lambda';
 import type { ContentRoadmap } from '@/lib/types';
 import { GlassRoadmapPanel } from '@/components/roadmap/GlassRoadmapPanel';
 
 export default function RoadmapsPage() {
+  const t = useTranslations('roadmaps');
   const [roadmaps, setRoadmaps] = useState<ContentRoadmap[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState('');
@@ -27,13 +29,13 @@ export default function RoadmapsPage() {
       <div className="hero-gradient border-b border-[#2c2828] px-4 pt-20 pb-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-[#e8a020]">
-            Library
+            {t('libraryLabel')}
           </p>
           <h1 className="text-3xl font-bold text-[var(--text-1)] sm:text-4xl">
-            Learning Roadmaps
+            {t('title')}
           </h1>
           <p className="mt-3 text-sm text-[var(--text-2)] sm:text-base">
-            AI-generated roadmaps with structured episodes — tap a roadmap to explore its episodes.
+            {t('subtitle')}
           </p>
         </div>
       </div>
@@ -59,10 +61,8 @@ export default function RoadmapsPage() {
         {!loading && !error && roadmaps.length === 0 && (
           <div className="flex flex-col items-center gap-3 py-24 text-center">
             <div className="text-4xl" aria-hidden="true">📭</div>
-            <p className="text-[var(--text-2)]">No roadmaps yet.</p>
-            <p className="text-sm text-[var(--text-3)]">
-              Check back soon — roadmaps are generated automatically.
-            </p>
+            <p className="text-[var(--text-2)]">{t('noRoadmaps')}</p>
+            <p className="text-sm text-[var(--text-3)]">{t('noRoadmapsHint')}</p>
           </div>
         )}
 

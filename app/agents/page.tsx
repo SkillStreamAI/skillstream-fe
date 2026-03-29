@@ -1,28 +1,17 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import type { ContentRoadmap, ContentEpisode } from '@/lib/types';
 import { getContent } from '@/lib/lambda';
 
-const AGENTS = [
-  {
-    id: 'trends',
-    name: 'Trend Discovery',
-    tagline: 'Finds what the tech world is learning right now',
-    description:
-      'Scans Google Trends and developer communities using Amazon Bedrock Strands and Tavily Search, then surfaces the top learning topics worth adding to your roadmap.',
-    live: true,
-    poweredBy: ['Amazon Bedrock', 'Strands Agents', 'Tavily Search'],
-  },
-  {
-    id: 'content',
-    name: 'Content Lifecycle',
-    tagline: 'Scans your roadmaps and checks that content stays current',
-    description:
-      'Reads every published roadmap, inspects the last time each one was updated, and flags entries that may be outdated — so your library never goes stale.',
-    live: true,
-    poweredBy: ['Step Functions', 'DynamoDB', 'EventBridge'],
-  },
-];
+interface Agent {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  live: boolean;
+  poweredBy: string[];
+}
 
 interface ChapterRow extends ContentEpisode {
   roadmapTopic: string;
@@ -54,6 +43,7 @@ function ChapterSkeletonRow() {
 }
 
 function ChaptersList() {
+  const t = useTranslations('agents');
   const [chapters, setChapters] = useState<ChapterRow[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState('');
@@ -83,8 +73,8 @@ function ChaptersList() {
   return (
     <div className="mt-6">
       <div className="mb-4">
-        <p className="text-sm font-semibold text-[var(--text-1)]">Trending Topics</p>
-        <p className="mt-0.5 text-xs text-[var(--text-3)]">Latest audio episodes generated from trending topics</p>
+        <p className="text-sm font-semibold text-[var(--text-1)]">{t('trendingTopics')}</p>
+        <p className="mt-0.5 text-xs text-[var(--text-3)]">{t('trendingSubtitle')}</p>
       </div>
 
       {loading && (
@@ -102,7 +92,7 @@ function ChaptersList() {
       )}
 
       {!loading && !error && chapters.length === 0 && (
-        <p className="text-xs text-[var(--text-3)]">No chapters found yet.</p>
+        <p className="text-xs text-[var(--text-3)]">{t('noChapters')}</p>
       )}
 
       {!loading && !error && chapters.length > 0 && (
@@ -140,6 +130,7 @@ function RoadmapSkeletonRow() {
 }
 
 function ContentLifecyclePanel() {
+  const t = useTranslations('agents');
   const [roadmaps, setRoadmaps] = useState<ContentRoadmap[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState('');
@@ -164,8 +155,8 @@ function ContentLifecyclePanel() {
   return (
     <div className="mt-6">
       <div className="mb-4">
-        <p className="text-sm font-semibold text-[var(--text-1)]">Roadmap Library</p>
-        <p className="mt-0.5 text-xs text-[var(--text-3)]">Showing the last time each roadmap received new content</p>
+        <p className="text-sm font-semibold text-[var(--text-1)]">{t('roadmapLibrary')}</p>
+        <p className="mt-0.5 text-xs text-[var(--text-3)]">{t('roadmapSubtitle')}</p>
       </div>
 
       {loading && (
@@ -181,7 +172,7 @@ function ContentLifecyclePanel() {
       )}
 
       {!loading && !error && roadmaps.length === 0 && (
-        <p className="text-xs text-[var(--text-3)]">No roadmaps found.</p>
+        <p className="text-xs text-[var(--text-3)]">{t('noRoadmaps')}</p>
       )}
 
       {!loading && !error && roadmaps.length > 0 && (
@@ -212,7 +203,27 @@ function ContentLifecyclePanel() {
 }
 
 export default function AgentsPage() {
+  const t = useTranslations('agents');
   const [activeAgent, setActiveAgent] = useState('trends');
+
+  const AGENTS: Agent[] = [
+    {
+      id: 'trends',
+      name: t('trendDiscovery'),
+      tagline: t('trendTagline'),
+      description: t('trendDesc'),
+      live: true,
+      poweredBy: ['Amazon Bedrock', 'Strands Agents', 'Tavily Search'],
+    },
+    {
+      id: 'content',
+      name: t('contentLifecycle'),
+      tagline: t('contentTagline'),
+      description: t('contentDesc'),
+      live: true,
+      poweredBy: ['Step Functions', 'DynamoDB', 'EventBridge'],
+    },
+  ];
 
   return (
     <div>
@@ -224,13 +235,13 @@ export default function AgentsPage() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#e8a020] opacity-50" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-[#e8a020]" />
             </span>
-            Agentic AI
+            {t('agenticLabel')}
           </div>
           <h1 className="text-3xl font-bold text-[var(--text-1)] sm:text-4xl">
-            AI Agents
+            {t('title')}
           </h1>
           <p className="mt-3 text-sm text-[var(--text-2)] sm:text-base">
-            Autonomous agents that run in the background — spotting trends, scanning your content, and making sure every roadmap stays relevant.
+            {t('subtitle')}
           </p>
         </div>
       </div>
@@ -266,7 +277,7 @@ export default function AgentsPage() {
                         ? 'bg-emerald-500 text-white'
                         : 'border border-white/10 bg-white/5 text-[var(--text-3)]'
                     }`}>
-                      {agent.live ? '● Live' : 'Coming soon'}
+                      {agent.live ? t('liveBadge') : t('comingSoon')}
                     </span>
                   </div>
                   <p className="text-xs text-[var(--text-2)] leading-relaxed">{agent.tagline}</p>
@@ -297,9 +308,9 @@ export default function AgentsPage() {
             <div className="flex items-start gap-3 flex-wrap">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-bold text-[var(--text-1)]">Content Lifecycle Agent</h2>
+                  <h2 className="text-base font-bold text-[var(--text-1)]">{t('contentLifecycleAgent')}</h2>
                   <span className="flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-semibold text-white">
-                    <span className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />{' '}Running
+                    <span className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />{' '}{t('running')}
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-[var(--text-2)] max-w-lg">{AGENTS[1].description}</p>
@@ -314,9 +325,9 @@ export default function AgentsPage() {
             <div className="flex items-start gap-3 flex-wrap">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-bold text-[var(--text-1)]">Trend Discovery Agent</h2>
+                  <h2 className="text-base font-bold text-[var(--text-1)]">{t('trendDiscoveryAgent')}</h2>
                   <span className="flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-semibold text-white">
-                    <span className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />{' '}Running
+                    <span className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />{' '}{t('running')}
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-[var(--text-2)] max-w-lg">{AGENTS[0].description}</p>
