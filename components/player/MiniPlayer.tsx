@@ -2,6 +2,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
+import { useTranslations } from 'next-intl';
 import { usePlayerStore } from '@/lib/player-store';
 import { WaveformVisualizer } from './WaveformVisualizer';
 
@@ -63,6 +64,7 @@ export function MiniPlayer() {
   } = usePlayerStore();
 
   const pathname = usePathname();
+  const tPlayer = useTranslations('player');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null);
 
@@ -170,8 +172,8 @@ export function MiniPlayer() {
                   if (audioRef.current) audioRef.current.currentTime = v;
                   setPosition(v);
                 }}
-                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                aria-label="Seek"
+                className="absolute inset-0 h-full w-full cursor-pointer opacity-0 mini-player-progress"
+                aria-label={tPlayer('seek')}
               />
             </div>
 
@@ -191,19 +193,19 @@ export function MiniPlayer() {
               </div>
 
               <div className="flex shrink-0 items-center gap-1">
-                <button onClick={() => usePlayerStore.getState().prev()} disabled={!hasPrev} aria-label="Previous"
+                <button onClick={() => usePlayerStore.getState().prev()} disabled={!hasPrev} aria-label={tPlayer('previous')}
                   className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[#9e9792] transition-colors hover:text-[#f5f0eb] disabled:opacity-25">
                   <SkipBackIcon />
                 </button>
-                <button onClick={isPlaying ? pause : resume} aria-label={isPlaying ? 'Pause' : 'Play'}
+                <button onClick={isPlaying ? pause : resume} aria-label={isPlaying ? tPlayer('pause') : tPlayer('play')}
                   className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-[#e8a020] text-black transition-all hover:bg-[#f5b030] active:scale-95">
                   {isPlaying ? <PauseIcon /> : <PlayIcon />}
                 </button>
-                <button onClick={() => usePlayerStore.getState().next()} disabled={!hasNext} aria-label="Next"
+                <button onClick={() => usePlayerStore.getState().next()} disabled={!hasNext} aria-label={tPlayer('next')}
                   className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[#9e9792] transition-colors hover:text-[#f5f0eb] disabled:opacity-25">
                   <SkipFwdIcon />
                 </button>
-                <button onClick={clear} aria-label="Close player"
+                <button onClick={clear} aria-label={tPlayer('closePlayer')}
                   className="ml-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full text-[#5a5450] transition-colors hover:text-[#9e9792]">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                     <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />

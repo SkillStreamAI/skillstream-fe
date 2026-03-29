@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { getContent } from '@/lib/lambda';
 import { usePlayerStore } from '@/lib/player-store';
 import { CoursePlayer } from '@/components/player/CoursePlayer';
@@ -49,6 +50,7 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
   const [error, setError] = useState('');
 
   const { currentTrackId, setQueue, playTrack } = usePlayerStore();
+  const t = useTranslations('player');
 
   useEffect(() => {
     getContent()
@@ -79,15 +81,15 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
       <div className="hero-gradient border-b border-[var(--border)] px-4 pt-20 pb-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <nav className="mb-3 flex items-center gap-2 text-xs text-[var(--text-3)]">
-            <a href="/player" className="transition-colors hover:text-[var(--text-2)]">Player</a>
+            <a href="/player" className="transition-colors hover:text-[var(--text-2)]">{t('playerLabel')}</a>
             <span>/</span>
             <span className="text-[var(--text-2)]">{topic || '…'}</span>
           </nav>
           <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-[var(--amber)]">{topic}</p>
-          <h1 className="text-2xl font-bold text-[var(--text-1)] sm:text-3xl line-clamp-2">{title || 'Loading…'}</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-1)] sm:text-3xl line-clamp-2">{title || t('loading')}</h1>
           {episodes.length > 0 && (
             <p className="mt-2 text-sm text-[var(--text-3)]">
-              {episodes.length} episode{episodes.length === 1 ? '' : 's'}
+              {t('episodesCount', { n: episodes.length })}
             </p>
           )}
         </div>
@@ -124,10 +126,10 @@ export default function CoursePlayerPage({ params }: { params: Promise<{ courseI
             <div className="order-2">
               <div className="mb-3 flex items-center justify-between">
                 <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-3)]">
-                  Episodes
+                  {t('episodesLabel')}
                 </p>
                 <p className="text-xs text-[var(--text-3)]">
-                  {episodes.length} total
+                  {t('episodesTotal', { n: episodes.length })}
                 </p>
               </div>
               <div className="flex flex-col gap-3 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto lg:pr-1">

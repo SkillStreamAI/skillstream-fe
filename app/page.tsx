@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 export const metadata: Metadata = {
   title: 'SkillStream AI — Audio Learning Roadmaps',
@@ -11,28 +12,30 @@ import { Button } from '@/components/ui/Button';
 import { InfiniteSlider } from '@/components/ui/infinite-slider';
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';
 
-const FEATURES = [
-  { icon: '🗺️', title: 'AI-Generated Roadmaps',    desc: 'Enter any tech topic and receive a structured, level-progressive learning path in seconds.' },
-  { icon: '🎙️', title: 'Podcast Episodes',          desc: 'Each roadmap node is paired with a curated audio episode you can listen to on the go.' },
-  { icon: '🤖', title: 'Agentic & Self-Evolving',   desc: 'Trend Discovery and Content Lifecycle agents keep your library fresh without manual effort.' },
-  { icon: '📈', title: 'Progress Tracking',         desc: 'Mark episodes complete, save roadmaps, and watch your expertise grow over time.' },
-  { icon: '⚡', title: 'Built on AWS',              desc: 'Powered by Amazon Bedrock, Polly, Step Functions, and DynamoDB for scale and reliability.' },
-  { icon: '🎧', title: 'Learn Anywhere',            desc: 'Convert your commute, gym session, or any dead time into productive learning windows.' },
-];
-
-const STEPS = [
-  { step: '01', title: 'Browse Roadmaps',  desc: 'Explore AI-generated learning paths across any technology domain.' },
-  { step: '02', title: 'Get Your Roadmap', desc: 'Amazon Bedrock generates a hierarchical syllabus ordered from foundations to expert level.' },
-  { step: '03', title: 'Listen & Learn',   desc: 'Amazon Polly narrates each module as a crisp 5–10 minute podcast episode.' },
-];
-
 const TOPICS = [
   'Kubernetes', 'Rust', 'LLM Engineering', 'AWS CDK', 'DevSecOps',
   'TypeScript', 'Terraform', 'Prompt Engineering', 'GraphQL', 'Observability',
   'WebAssembly', 'Distributed Systems', 'MLOps', 'Edge Computing', 'Zero Trust',
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const t = await getTranslations('landing');
+
+  const FEATURES = [
+    { icon: '🗺️', title: t('aiRoadmapsFeatureTitle'), desc: t('aiRoadmapsFeatureDescription') },
+    { icon: '🎙️', title: t('podcastFeatureTitle'), desc: t('podcastFeatureDescription') },
+    { icon: '🤖', title: t('agenticFeatureTitle'), desc: t('agenticFeatureDescription') },
+    { icon: '📈', title: t('progressFeatureTitle'), desc: t('progressFeatureDescription') },
+    { icon: '⚡', title: t('awsFeatureTitle'), desc: t('awsFeatureDescription') },
+    { icon: '🎧', title: t('mobileFeatureTitle'), desc: t('mobileFeatureDescription') },
+  ];
+
+  const STEPS = [
+    { step: '01', title: t('step1Title'), desc: t('step1Description') },
+    { step: '02', title: t('step2Title'), desc: t('step2Description') },
+    { step: '03', title: t('step3Title'), desc: t('step3Description') },
+  ];
+
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────── */}
@@ -51,23 +54,22 @@ export default function LandingPage() {
           {/* Eyebrow */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--text-2)]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#e8a020]" />
-            Powered by AWS Bedrock &amp; Amazon Polly
+            {t('poweredByBadge')}
           </div>
 
           <h1 className="text-5xl font-extrabold leading-[1.1] tracking-tight text-[var(--text-1)] sm:text-6xl lg:text-7xl">
-            Learn Smarter,
+            {t('heroTitleMain')}
             <br />
-            <span className="gradient-text">Stream Faster</span>
+            <span className="gradient-text">{t('heroTitleHighlight')}</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-base text-[var(--text-2)] sm:text-lg">
-            SkillStream AI turns any tech topic into a structured audio roadmap.
-            Clear, ordered episodes that fit into your day.
+            {t('heroDescription')}
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link href="/roadmaps">
-              <Button size="lg">Browse Roadmaps</Button>
+              <Button size="lg">{t('heroBrowseButton')}</Button>
             </Link>
           </div>
         </div>
@@ -96,9 +98,9 @@ export default function LandingPage() {
 
       {/* ── How it works ─────────────────────────────────── */}
       <section className="mx-auto max-w-5xl px-4 py-20 sm:py-28 sm:px-6 lg:px-8">
-        <p className="mb-2 text-center text-xs font-semibold uppercase tracking-widest text-[#e8a020]">How it works</p>
+        <p className="mb-2 text-center text-xs font-semibold uppercase tracking-widest text-[#e8a020]">{t('howItWorksSectionTag')}</p>
         <h2 className="mb-12 text-center text-2xl font-bold text-[var(--text-1)] sm:text-3xl">
-          From topic to podcast in minutes
+          {t('howItWorksSectionTitle')}
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {STEPS.map(({ step, title, desc }) => (
@@ -120,9 +122,9 @@ export default function LandingPage() {
 
       {/* ── Features ─────────────────────────────────────── */}
       <section className="mx-auto max-w-5xl px-4 py-20 sm:py-28 sm:px-6 lg:px-8">
-        <p className="mb-2 text-center text-xs font-semibold uppercase tracking-widest text-[#e8a020]">Features</p>
+        <p className="mb-2 text-center text-xs font-semibold uppercase tracking-widest text-[#e8a020]">{t('featuresSectionTag')}</p>
         <h2 className="mb-12 text-center text-2xl font-bold text-[var(--text-1)] sm:text-3xl">
-          Everything you need to level up
+          {t('featuresSectionTitle')}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (

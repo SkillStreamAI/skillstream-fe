@@ -1,6 +1,7 @@
 'use client';
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -15,12 +16,13 @@ export function AuthForm() {
 
   const { login, signup } = useAuth();
   const router = useRouter();
+  const t = useTranslations('auth');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     if (!email || !password) {
-      setError('Please fill in all fields.');
+      setError(t('errorEmptyFields'));
       return;
     }
     setLoading(true);
@@ -32,7 +34,7 @@ export function AuthForm() {
       }
       router.push('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      setError(err instanceof Error ? err.message : t('errorGeneric'));
     } finally {
       setLoading(false);
     }
@@ -42,38 +44,36 @@ export function AuthForm() {
     <div className="glass-panel p-8">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-[var(--text-1)]">
-          {mode === 'signin' ? 'Welcome back' : 'Create account'}
+          {mode === 'signin' ? t('signInTitle') : t('signUpTitle')}
         </h2>
         <p className="mt-1 text-sm text-[var(--text-2)]">
-          {mode === 'signin'
-            ? 'Sign in to access your roadmaps and episodes.'
-            : 'Get started with your learning journey today.'}
+          {mode === 'signin' ? t('signInSubtitle') : t('signUpSubtitle')}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {mode === 'signup' && (
           <Input
-            label="Name"
+            label={t('nameLabel')}
             type="text"
-            placeholder="Your name"
+            placeholder={t('namePlaceholder')}
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={loading}
           />
         )}
         <Input
-          label="Email"
+          label={t('emailLabel')}
           type="email"
-          placeholder="you@example.com"
+          placeholder={t('emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={loading}
         />
         <Input
-          label="Password"
+          label={t('passwordLabel')}
           type="password"
-          placeholder="••••••••"
+          placeholder={t('passwordPlaceholder')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={loading}
@@ -86,12 +86,12 @@ export function AuthForm() {
         )}
 
         <Button type="submit" size="lg" loading={loading} className="mt-2 w-full">
-          {mode === 'signin' ? 'Sign in' : 'Create account'}
+          {mode === 'signin' ? t('signInButton') : t('signUpButton')}
         </Button>
       </form>
 
       <p className="mt-5 text-center text-sm text-[var(--text-2)]">
-        {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
+        {mode === 'signin' ? t('signUpPrompt') : t('signInPrompt')}
         <button
           type="button"
           className="font-medium text-[var(--amber)] hover:brightness-110 transition-colors cursor-pointer"
@@ -100,7 +100,7 @@ export function AuthForm() {
             setError('');
           }}
         >
-          {mode === 'signin' ? 'Sign up' : 'Sign in'}
+          {mode === 'signin' ? t('signUpLink') : t('signInLink')}
         </button>
       </p>
     </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
+import { useTranslations } from 'next-intl';
 import type { ContentRoadmap, ContentEpisode } from '@/lib/types';
 
 function ChevronIcon({ open }: Readonly<{ open: boolean }>) {
@@ -41,6 +42,7 @@ function PlayIcon({ size = 14 }: Readonly<{ size?: number }>) {
 }
 
 function StatusBadge({ status }: Readonly<{ status: string }>) {
+  const t = useTranslations('roadmaps');
   const isReady = status === 'READY' || status === 'COMPLETED' || status === 'ready';
   return (
     <span
@@ -48,12 +50,13 @@ function StatusBadge({ status }: Readonly<{ status: string }>) {
         isReady ? 'bg-emerald-500 text-white' : 'bg-amber-400 text-black'
       }`}
     >
-      {isReady ? 'Ready' : 'Pending'}
+      {isReady ? t('statusReady') : t('statusPending')}
     </span>
   );
 }
 
 function EpisodeRow({ episode, roadmapId }: Readonly<{ episode: ContentEpisode; roadmapId: string }>) {
+  const t = useTranslations('roadmaps');
   return (
     <li className="glass-row group">
       <div className="flex items-start gap-3 px-4 py-3 sm:px-5 sm:py-3.5">
@@ -74,10 +77,10 @@ function EpisodeRow({ episode, roadmapId }: Readonly<{ episode: ContentEpisode; 
         <Link
           href={`/player/${roadmapId}?autoplay=true`}
           className="mt-0.5 shrink-0 flex items-center gap-1.5 rounded-full bg-[var(--amber)] px-3 py-1.5 text-xs font-semibold text-black transition-colors hover:brightness-110 focus-visible:outline-2 focus-visible:outline-[var(--amber)]"
-          aria-label={`Play ${episode.title}`}
+          aria-label={`${t('play')} ${episode.title}`}
         >
           <PlayIcon size={12} />
-          <span className="hidden sm:inline">Play</span>
+          <span className="hidden sm:inline">{t('play')}</span>
         </Link>
       </div>
     </li>
@@ -91,6 +94,7 @@ interface GlassRoadmapPanelProps {
 
 export function GlassRoadmapPanel({ roadmap, defaultOpen = false }: GlassRoadmapPanelProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
+  const t = useTranslations('roadmaps');
 
   const readyCount = roadmap.episodes.filter(
     (e) => e.status === 'READY' || e.status === 'COMPLETED' || e.status === 'ready',
@@ -128,17 +132,17 @@ export function GlassRoadmapPanel({ roadmap, defaultOpen = false }: GlassRoadmap
 
           {/* Meta */}
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-[var(--text-2)]">
-            <span>{roadmap.episodes.length} episode{roadmap.episodes.length !== 1 ? 's' : ''}</span>
+            <span>{t('episodesCount', { n: roadmap.episodes.length })}</span>
             {readyCount > 0 && (
               <>
                 <span aria-hidden="true">·</span>
-                <span className="font-medium text-emerald-500">{readyCount} ready</span>
+                <span className="font-medium text-emerald-500">{readyCount} {t('ready')}</span>
               </>
             )}
             {pendingCount > 0 && (
               <>
                 <span aria-hidden="true">·</span>
-                <span className="font-medium text-amber-500">{pendingCount} pending</span>
+                <span className="font-medium text-amber-500">{pendingCount} {t('pending')}</span>
               </>
             )}
           </div>
@@ -151,10 +155,10 @@ export function GlassRoadmapPanel({ roadmap, defaultOpen = false }: GlassRoadmap
               href={`/player/${roadmap.id}?autoplay=true`}
               onClick={(e) => e.stopPropagation()}
               className="flex items-center gap-1.5 rounded-full bg-[var(--amber)] px-3 py-1.5 text-xs font-semibold text-black transition-all hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-[var(--amber)]"
-              aria-label={`Play all episodes in ${roadmap.title}`}
+              aria-label={`${t('playAll')} — ${roadmap.title}`}
             >
               <PlayIcon size={11} />
-              <span>Play All</span>
+              <span>{t('playAll')}</span>
             </Link>
           )}
           <div className="text-[var(--text-2)]">
@@ -176,7 +180,7 @@ export function GlassRoadmapPanel({ roadmap, defaultOpen = false }: GlassRoadmap
             className="relative z-10"
           >
             {roadmap.episodes.length === 0 ? (
-              <p className="px-5 pb-5 text-sm text-[var(--text-3)]">No episodes yet.</p>
+              <p className="px-5 pb-5 text-sm text-[var(--text-3)]">{t('noEpisodes')}</p>
             ) : (
               <ul>
                 {roadmap.episodes.map((episode) => (
