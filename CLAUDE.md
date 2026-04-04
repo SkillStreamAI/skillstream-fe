@@ -178,3 +178,14 @@ Read ai-docs/google-analytics-guide.md for Google Analytics 4 implementation.
 Read ai-docs/web-accessibility-guide.md for web accessibility (WCAG 2.2).
 
 Read ai-docs/web-performance-guide.md for web performance and Core Web Vitals.
+
+---
+
+## Productization TODO
+
+- Review every user-facing text on the site and replace technical explanations with concise product copy.
+- Remove development-oriented details about tooling, architecture, and implementation from public pages.
+- Clean up page titles, headers, buttons, and descriptions so the site feels polished and product-ready.
+- Add or revise the site's accessibility statement to reflect inclusive design commitments.
+- Ensure all messaging is smooth, customer-focused, and aligned with the product story.
+- Verify the final copy is consistent across landing, roadmap, player, and dashboard pages.
